@@ -5,7 +5,7 @@
 [ext_resource path="res://assets/sprites/cursor.png" type="Texture" id=3]
 
 [sub_resource type="RectangleShape2D" id=3]
-extents = Vector2( 15.8125, 32 )
+extents = Vector2( 32, 16 )
 
 [sub_resource type="Animation" id=1]
 length = 0.001
@@ -93,7 +93,7 @@ tracks/6/keys = {
 "times": PoolRealArray( 0 ),
 "transitions": PoolRealArray( 1 ),
 "update": 0,
-"values": [ Vector2( 0, 0 ) ]
+"values": [ Vector2( 0, 8 ) ]
 }
 tracks/7/type = "value"
 tracks/7/path = NodePath(".:hframes")
@@ -130,6 +130,18 @@ tracks/9/keys = {
 "transitions": PoolRealArray( 1 ),
 "update": 0,
 "values": [ Vector2( 1, 1 ) ]
+}
+tracks/10/type = "value"
+tracks/10/path = NodePath("../hitbox:rotation_degrees")
+tracks/10/interp = 1
+tracks/10/loop_wrap = true
+tracks/10/imported = false
+tracks/10/enabled = true
+tracks/10/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ 90.0 ]
 }
 
 [sub_resource type="Animation" id=2]
@@ -180,10 +192,10 @@ tracks/3/loop_wrap = true
 tracks/3/imported = false
 tracks/3/enabled = true
 tracks/3/keys = {
-"times": PoolRealArray( 0, 0.0833333, 0.125, 0.166667, 0.208333, 0.25, 0.291667 ),
-"transitions": PoolRealArray( 1, 1, 1, 1, 1, 1, 1 ),
+"times": PoolRealArray( 0, 0.0416667 ),
+"transitions": PoolRealArray( 1, 1 ),
 "update": 1,
-"values": [ Vector2( 0, 0 ), Vector2( 2, 0 ), Vector2( 1, 0 ), Vector2( 0, 0 ), Vector2( -2, 0 ), Vector2( -4, 0 ), Vector2( -5, -0.999992 ) ]
+"values": [ Vector2( 0, 8 ), Vector2( 0, 8 ) ]
 }
 tracks/4/type = "value"
 tracks/4/path = NodePath("../hitbox:shape:extents")
@@ -293,10 +305,10 @@ tracks/4/loop_wrap = true
 tracks/4/imported = false
 tracks/4/enabled = true
 tracks/4/keys = {
-"times": PoolRealArray( 0, 0.0833333, 0.125, 0.166667, 0.208333, 0.25, 0.291667 ),
+"times": PoolRealArray( 0, 0.0833333, 0.125, 0.166667, 0.208334, 0.25, 0.291667 ),
 "transitions": PoolRealArray( 1, 1, 1, 1, 1, 1, 1 ),
 "update": 1,
-"values": [ Vector2( 3, 0 ), Vector2( 2, 0 ), Vector2( 1, 0 ), Vector2( 0, 0 ), Vector2( -2, 0 ), Vector2( -4, 0 ), Vector2( -5, -0.999992 ) ]
+"values": [ Vector2( 3, 0 ), Vector2( 2, 0 ), Vector2( 1, 0 ), Vector2( 0, 0 ), Vector2( -1.19209e-07, -2.84217e-14 ), Vector2( 0, 8 ), Vector2( 0, 8 ) ]
 }
 tracks/5/type = "value"
 tracks/5/path = NodePath("../hitbox:scale")
@@ -449,14 +461,21 @@ collision_mask = 2
 contacts_reported = 3
 script = ExtResource( 2 )
 
+[node name="fade_of" type="Timer" parent="."]
+wait_time = 0.5
+one_shot = true
+
 [node name="hitbox" type="CollisionShape2D" parent="."]
-position = Vector2( 0, 8 )
+rotation = 1.5708
 shape = SubResource( 3 )
 
 [node name="Sprite" type="Sprite" parent="."]
-scale = Vector2( 1, 0.66 )
+position = Vector2( 0, 8 )
+rotation = 1.5708
+scale = Vector2( 1.77778, 0.31 )
 texture = ExtResource( 1 )
 hframes = 8
+frame = 6
 region_enabled = true
 region_rect = Rect2( 24, 2458, 317, 100 )
 
@@ -486,5 +505,6 @@ modulate = Color( 1, 0, 0.984314, 1 )
 self_modulate = Color( 1, 0, 0.937255, 1 )
 shape = SubResource( 7 )
 
+[connection signal="timeout" from="fade_of" to="." method="_on_fade_of_timeout"]
 [connection signal="input_event" from="monitor" to="." method="_on_monitor_input_event"]
 [connection signal="body_entered" from="Area2D" to="." method="_on_Area2D_body_entered"]

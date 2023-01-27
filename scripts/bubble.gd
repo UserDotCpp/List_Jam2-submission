@@ -11,5 +11,6 @@ func _ready():
 	pass # Replace with function body.
 
 func _on_bubble_body_entered(body):
-	Global.emit_signal("oxygen_gained",20)
-	queue_free()
+	if body.to_string().begins_with ("tako:"):
+		Global.emit_signal("oxygen_gained",20)
+		queue_free()

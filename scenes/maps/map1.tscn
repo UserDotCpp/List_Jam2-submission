@@ -1,38 +1,26 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=5 format=2]
 
-[ext_resource path="res://scenes/entities/tako.tscn" type="PackedScene" id=1]
-[ext_resource path="res://scripts/Camera2D.gd" type="Script" id=2]
-[ext_resource path="res://assets/sprites/back.png" type="Texture" id=3]
-[ext_resource path="res://scenes/hud.tscn" type="PackedScene" id=4]
+[ext_resource path="res://scenes/flag.tscn" type="PackedScene" id=1]
+[ext_resource path="res://assets/map_assets/map1/back.png" type="Texture" id=2]
 [ext_resource path="res://scenes/entities/bubble.tscn" type="PackedScene" id=5]
 [ext_resource path="res://scenes/entities/enemy.tscn" type="PackedScene" id=6]
 
-[node name="map1" type="Node2D"]
+[node name="map" type="Node2D"]
 
-[node name="camera" type="Camera2D" parent="."]
-rotating = true
-current = true
-script = ExtResource( 2 )
-player_path = NodePath("../tako")
+[node name="stage" type="StaticBody2D" parent="."]
 
-[node name="hud" parent="camera" instance=ExtResource( 4 )]
-
-[node name="geograpy" type="Node2D" parent="."]
-
-[node name="stage" type="StaticBody2D" parent="geograpy"]
-
-[node name="Sprite" type="Sprite" parent="geograpy/stage"]
+[node name="Sprite" type="Sprite" parent="stage"]
 position = Vector2( 632, 376 )
 scale = Vector2( 1.19375, 1.17778 )
-texture = ExtResource( 3 )
+texture = ExtResource( 2 )
 
-[node name="1" type="CollisionPolygon2D" parent="geograpy/stage"]
+[node name="1" type="CollisionPolygon2D" parent="stage"]
 polygon = PoolVector2Array( 96, 624, 64, 208, 416, 152, 920, 136, 1160, 168, 1352, 176, 1360, 312, 1400, 320, 1408, 64, 0, 64, 0, 696, 1408, 704, 1400, 424, 1296, 400, 1272, 424, 1304, 456, 1280, 464, 1344, 480, 1328, 448, 1360, 448, 1384, 592, 1264, 576, 920, 576, 928, 536, 848, 560, 832, 632, 768, 536, 736, 568, 752, 600 )
 
-[node name="2" type="CollisionPolygon2D" parent="geograpy/stage"]
+[node name="2" type="CollisionPolygon2D" parent="stage"]
 polygon = PoolVector2Array( 448, 448, 456, 400, 528, 360, 712, 344, 712, 376, 528, 392 )
 
-[node name="3" type="CollisionPolygon2D" parent="geograpy/stage"]
+[node name="3" type="CollisionPolygon2D" parent="stage"]
 polygon = PoolVector2Array( 824, 328, 1192, 328, 1224, 296, 1248, 304, 1200, 344, 1064, 376, 888, 376, 824, 352 )
 
 [node name="entities" type="Node2D" parent="."]
@@ -41,8 +29,23 @@ polygon = PoolVector2Array( 824, 328, 1192, 328, 1224, 296, 1248, 304, 1200, 344
 position = Vector2( 832, 504 )
 
 [node name="enemy2" parent="entities" instance=ExtResource( 6 )]
-position = Vector2( 976, 304 )
-mode = 1
+position = Vector2( 976, 336 )
 
-[node name="tako" parent="." instance=ExtResource( 1 )]
-position = Vector2( 216, 528 )
+[node name="bubble2" parent="entities" instance=ExtResource( 5 )]
+position = Vector2( 1368, 368 )
+
+[node name="flag" parent="entities" instance=ExtResource( 1 )]
+position = Vector2( 1160, 432 )
+next_scene = "res://scenes/maps/map2.tscn"
+
+[node name="collision_shape" parent="entities/flag/activation_area" index="0"]
+position = Vector2( 0, -56 )
+scale = Vector2( 5, 30 )
+
+[node name="blocage_position" parent="entities/flag" index="1"]
+position = Vector2( -632, -48 )
+
+[node name="next_scene_position" parent="entities/flag" index="2"]
+position = Vector2( 264, -56 )
+
+[editable path="entities/flag"]

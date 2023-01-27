@@ -2,10 +2,12 @@ extends CanvasLayer
 onready var fps = $fps
 onready var time_passed = $time
 onready var time_changes = $time_changes
-export var total_time = 15
+export var total_time = 30
 
 func _ready():
-	Global.connect("oxygen_spended",self,"lost_seconds")
+# warning-ignore:return_value_discarded
+	Global.connect("oxygen_spend",self,"lost_seconds")
+# warning-ignore:return_value_discarded
 	Global.connect("oxygen_gained",self,"gained_seconds")
 
 func lost_seconds(value):
@@ -29,4 +31,4 @@ func _process(delta):
 	if $fade_out.is_stopped():
 		time_changes.text = " "
 	if total_time <= 0:
-		Global.switch_map("scenes/maps/map1.tscn")
+		Global.switch_map("//scenes/main.tscn")

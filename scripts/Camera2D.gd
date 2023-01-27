@@ -9,9 +9,9 @@ export(NodePath) var player_path
 var player: Node2D
 
 func _ready():
+# warning-ignore:return_value_discarded
 	Global.connect("move_camera", self, "_on_move_camera")
 	player = get_node(player_path)
-	
 
 func _physics_process(_delta):
 	if !follow_tako:

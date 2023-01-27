@@ -1,0 +1,91 @@
+[gd_scene load_steps=6 format=2]
+
+[ext_resource path="res://assets/map_assets/map2/back.png" type="Texture" id=1]
+[ext_resource path="res://scenes/entities/enemy.tscn" type="PackedScene" id=2]
+[ext_resource path="res://scenes/entities/bubble.tscn" type="PackedScene" id=3]
+[ext_resource path="res://scenes/flag.tscn" type="PackedScene" id=4]
+[ext_resource path="res://assets/icon.png" type="Texture" id=5]
+
+[node name="map2" type="Node2D"]
+position = Vector2( 688, -984 )
+
+[node name="stage" type="StaticBody2D" parent="."]
+
+[node name="Sprite" type="Sprite" parent="stage"]
+position = Vector2( -216, 232 )
+scale = Vector2( 0.983776, 0.987479 )
+texture = ExtResource( 1 )
+offset = Vector2( 208.381, -219.751 )
+
+[node name="1" type="CollisionPolygon2D" parent="stage"]
+polygon = PoolVector2Array( -680, 896, -472, 896, -488, 600, -392, -40, -272, -752, -680, -760 )
+
+[node name="2" type="CollisionPolygon2D" parent="stage"]
+polygon = PoolVector2Array( -688, -912, -360, -936, -360, -1096, -32, -1120, 552, -968, 608, -336, 96, -344, 80, -280, 608, -272, 592, 352, -24, 320, -32, 376, 600, 416, 560, 896, 440, 1064, 24, 1072, -680, 1064, -680, 1200, 656, 1200, 656, -1168, -680, -1160 )
+
+[node name="entities" type="Node2D" parent="."]
+
+[node name="enemy" parent="entities" instance=ExtResource( 2 )]
+position = Vector2( -376, -104 )
+rotation = 1.78398
+
+[node name="enemy2" parent="entities" instance=ExtResource( 2 )]
+position = Vector2( 560, 312 )
+rotation = -1.0472
+
+[node name="enemy3" parent="entities" instance=ExtResource( 2 )]
+position = Vector2( 584, -240 )
+rotation = -2.13843
+
+[node name="enemy4" parent="entities" instance=ExtResource( 2 )]
+position = Vector2( 56, 384 )
+rotation = 3.13669
+
+[node name="enemy5" parent="entities" instance=ExtResource( 2 )]
+position = Vector2( 432, 400 )
+rotation = 3.13669
+
+[node name="enemy6" parent="entities" instance=ExtResource( 2 )]
+position = Vector2( 232, -320 )
+rotation = 6.24086
+
+[node name="enemy7" parent="entities" instance=ExtResource( 2 )]
+position = Vector2( 224, -1056 )
+rotation = 3.42011
+
+[node name="enemy8" parent="entities" instance=ExtResource( 2 )]
+position = Vector2( 464, 1008 )
+rotation = -1.0472
+
+[node name="enemy9" parent="entities" instance=ExtResource( 2 )]
+position = Vector2( 576, -712 )
+rotation = -1.60888
+
+[node name="bubble" parent="entities" instance=ExtResource( 3 )]
+position = Vector2( 168, 24 )
+
+[node name="bubble2" parent="entities" instance=ExtResource( 3 )]
+position = Vector2( -528, 984 )
+
+[node name="bubble3" parent="entities" instance=ExtResource( 3 )]
+position = Vector2( -128, -728 )
+
+[node name="flag" parent="entities" instance=ExtResource( 4 )]
+position = Vector2( -600, 984 )
+next_scene = "res://scenes/maps/map1.tscn"
+kill_scene = "map1"
+blocage_x = 20
+blocage_y = 20
+
+[node name="collision_shape" parent="entities/flag/activation_area" index="0"]
+position = Vector2( 656, -192 )
+scale = Vector2( 60, 10 )
+
+[node name="next_scene_position" parent="entities/flag" index="2"]
+position = Vector2( -1504, -2120 )
+
+[node name="Sprite" type="Sprite" parent="."]
+position = Vector2( -640, -840 )
+texture = ExtResource( 5 )
+
+[editable path="entities/flag"]

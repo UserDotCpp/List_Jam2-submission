@@ -1,0 +1,20 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://scripts/flag.gd" type="Script" id=1]
+
+[sub_resource type="RectangleShape2D" id=1]
+
+[node name="flag" type="Node2D"]
+script = ExtResource( 1 )
+blocage_y = 25
+
+[node name="activation_area" type="Area2D" parent="."]
+
+[node name="collision_shape" type="CollisionShape2D" parent="activation_area"]
+shape = SubResource( 1 )
+
+[node name="blocage_position" type="Position2D" parent="."]
+
+[node name="next_scene_position" type="Position2D" parent="."]
+
+[connection signal="body_entered" from="activation_area" to="." method="_on_activation_area_body_entered"]
