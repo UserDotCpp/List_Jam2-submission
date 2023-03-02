@@ -77,12 +77,14 @@ shape = SubResource( 3 )
 position = Vector2( -1.5, 72 )
 scale = Vector2( 0.965116, 1 )
 frames = SubResource( 4 )
+frame = 2
 playing = true
 
 [node name="sprite" type="AnimatedSprite" parent="body1/body2/body3"]
 position = Vector2( -1.5, 72 )
 scale = Vector2( 0.965116, 1 )
 frames = SubResource( 4 )
+frame = 2
 playing = true
 
 [node name="3-4" type="PinJoint2D" parent="body1/body2/body3"]
@@ -95,6 +97,7 @@ softness = 4.0
 position = Vector2( -1.5, 72 )
 scale = Vector2( 0.965116, 1 )
 frames = SubResource( 4 )
+frame = 2
 playing = true
 
 [node name="2-3" type="PinJoint2D" parent="body1/body2"]
@@ -107,7 +110,7 @@ softness = 3.0
 position = Vector2( -1.5, 72 )
 scale = Vector2( 0.965116, 1 )
 frames = SubResource( 4 )
-frame = 2
+frame = 1
 playing = true
 
 [node name="1-2" type="PinJoint2D" parent="body1"]
@@ -118,6 +121,7 @@ softness = 2.0
 
 [node name="sprite" type="AnimatedSprite" parent="."]
 frames = SubResource( 2 )
+frame = 2
 playing = true
 
 [node name="0-1" type="PinJoint2D" parent="."]

@@ -81,7 +81,7 @@ func _process(delta):
 #		time_changes.text = " " 
 #		$bubble.stop()
 	if $worm_attack.is_stopped():
-		$worm_attack.start(0.0165)
+		$worm_attack.start(0.01655)
 		Global.emit_signal("spawn_worm")
 	if total_time <= 0:
 		$me_mori.play()

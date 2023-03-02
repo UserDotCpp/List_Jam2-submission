@@ -30,5 +30,12 @@ points = PoolVector2Array( -128, 64, 128, 64 )
 [node name="die" type="Timer" parent="."]
 wait_time = 0.136
 
+[node name="spawn_delay" type="Timer" parent="."]
+wait_time = 0.5
+
+[node name="direction_line" type="Line2D" parent="."]
+points = PoolVector2Array( 0, 0, 0, 0 )
+default_color = Color( 0.4, 0.501961, 1, 0.392157 )
+
 [connection signal="body_entered" from="activation_area" to="." method="_on_activation_area_body_entered"]
 [connection signal="timeout" from="die" to="." method="_on_die_timeout"]

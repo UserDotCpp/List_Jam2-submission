@@ -18,8 +18,8 @@ signal oxygen_gained(value)
 signal spawn_worm()
 # warning-ignore:unused_signal
 signal level_finished()
-
-
+# warning-ignore:unused_signal
+signal screen_shake(value)
 
 func switch_map(nombre):
 	# warning-ignore:return_value_discarded
