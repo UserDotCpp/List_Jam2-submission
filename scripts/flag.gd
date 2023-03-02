@@ -55,15 +55,26 @@ func spawn_the_worm():
 	if (randi() % 2 + 1) == 1:#up or down
 		worm_spawn_position = Vector2(rng.randf_range(up.x, up.y),up.z)
 		worm_direction = Vector2(rng.randf_range(down.x, down.y),down.z)
+		var direction = worm_direction - worm_spawn_position
+		var real_angle = (direction.angle() * 180) / PI
+		
 		$direction_line.set_point_position(0 , worm_spawn_position)
 		$direction_line.set_point_position(1, worm_direction)
-		worm_rotation_degrees = 180
+		var x = worm_direction - worm_spawn_position
+		x = x.normalized() * x.length()
+		worm_rotation_degrees = real_angle + 90 
 	else:
 		worm_spawn_position = Vector2(rng.randf_range(down.x, down.y),down.z)
 		worm_direction = Vector2(rng.randf_range(up.x, up.y),up.z)
+		var direction = worm_direction - worm_spawn_position
+		var real_angle = (direction.angle() * 180) / PI
+		
 		$direction_line.set_point_position(0, worm_spawn_position)
 		$direction_line.set_point_position(1, worm_direction)
-		worm_rotation_degrees = 0
+		var x = worm_direction - worm_spawn_position
+		x = x.normalized() * x.length()
+		worm_rotation_degrees = real_angle + 90
+		
 	#$worm/body1.position = worm_spawn_position
 	get_node("worm_place").add_child(worm_instance)
 	worm_instance.z_index = 1
