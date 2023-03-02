@@ -33,13 +33,17 @@ func _ready():
 
 func spawn_the_worm():
 	var worm_instance
+	var width
 	match(randi() % 3 + 1):
 		1:
 			worm_instance = worm1.instance()
+			width = 30
 		2:
 			worm_instance = worm2.instance()
+			width = 50
 		3:
 			worm_instance = worm3.instance()
+			width = 100
 	var worm_rotation_degrees
 	var worm_spawn_position
 	var worm_direction
@@ -47,18 +51,27 @@ func spawn_the_worm():
 			old_instanced_worms.queue_free()
 	#		worm_instance.queue_free()
 	rng.randomize()
+	$direction_line.width = width
 	if (randi() % 2 + 1) == 1:#up or down
 		worm_spawn_position = Vector2(rng.randf_range(up.x, up.y),up.z)
 		worm_direction = Vector2(rng.randf_range(down.x, down.y),down.z)
+		$direction_line.set_point_position(0 , worm_spawn_position)
+		$direction_line.set_point_position(1, worm_direction)
 		worm_rotation_degrees = 180
 	else:
 		worm_spawn_position = Vector2(rng.randf_range(down.x, down.y),down.z)
 		worm_direction = Vector2(rng.randf_range(up.x, up.y),up.z)
+		$direction_line.set_point_position(0, worm_spawn_position)
+		$direction_line.set_point_position(1, worm_direction)
 		worm_rotation_degrees = 0
 	#$worm/body1.position = worm_spawn_position
 	get_node("worm_place").add_child(worm_instance)
+	worm_instance.z_index = 1
+	
 	worm_instance.position = worm_spawn_position
 	worm_instance.rotation_degrees = worm_rotation_degrees
+	
+	yield(get_tree().create_timer(1), "timeout")
 	#worm_instance.rotation_degrees = get_angle_to(worm_direction)
 	worm_instance.apply_central_impulse((worm_direction - worm_spawn_position) * 6)
 	worm_exist = true
