@@ -1,0 +1,89 @@
+extends RigidBody2D
+var power = 1
+var shoot_pos
+var can_shoot = false
+var direc = 0
+var aiming = false
+var last = 0
+var first_time_chargin = true
+var shot = false
+onready var animation_player = $ap
+onready var cursor = $cursor
+onready var fade_of_timer = $fade_of
+
+onready var the_progress_bar = $ui/ProgressBar
+onready var ui = $ui
+
+func _physics_process(_delta):
+	set_rotation(direc)
+	ui.set_rotation(-direc)
+#https://www.youtube.com/watch?v=vVDVJMomxBU
+#https://godotengine.org/qa/28543/godot-3-0-2-get-global-position-from-touchscreen
+func _input(event):
+	if !can_shoot:
+		return
+	if Input.is_action_pressed("leftMouse"):
+		shot = false
+		ui.show()
+		if first_time_chargin: 
+			animation_state("charging shot")
+		first_time_chargin = false
+		cursor.visible = true
+		Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
+		shoot_pos = get_canvas_transform().xform_inv(event.position) - global_position #shoot_pos = get_global_mouse_position() - global_position#shoot_pos =to_global(event.position) - global_position
+		shoot_pos = shoot_pos.normalized() * clamp(shoot_pos.length(), 0, 200)
+		var pointer_scale = shoot_pos.length() / 200 #200 = max_aim_distance
+		cursor.scale = Vector2(0.15, 0.15) * log((1+pointer_scale)*1.50) #vector = max_cursor_scale 0.25, 0.25
+		cursor.global_position = shoot_pos + global_position
+		direc = ((shoot_pos).angle() + PI)
+		if power >= 100:
+			return
+		if shoot_pos.angle() >= last+0.01 or shoot_pos.angle() <= last-0.01:
+			power = power + power*0.25
+			#power += 1#0.05
+		last = shoot_pos.angle()
+		the_progress_bar.value = power
+		#linear_velocity = Vector2(0,0)
+		#the_progress_bar.value = power
+	elif Input.is_action_just_released("leftMouse"):
+	#elif Input.is_action_just_pressed("rightMouse"):
+		#Global.emit_signal("get_touch_real_global_position")
+		shot = true
+		first_time_chargin = true
+		if power >= 10:
+			animation_state("shot")
+			fade_of_timer.start()
+		cursor.visible = false
+		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+		mode = RigidBody2D.MODE_RIGID
+		var speed = -shoot_pos
+		apply_central_impulse((speed* 0.01) * (power *5))#apply_central_impulse((speed* 0.05) * (1 + power)) # 8 = speed modifier
+		Global.emit_signal("oxygen_spend",(1+power*0.025))#Global.emit_signal("oxygen_spend",(power + 1))
+		power = 1
+		ui.hide()
+	if Input.is_action_just_pressed("rightMouse"):
+		linear_velocity = linear_velocity* 0.05
+		animation_state("shot")
+		fade_of_timer.start()#power*0.01)
+	#	cursor.visible = false
+	#	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+
+func _on_monitor_input_event(_viewport, _event, _shape_idx):
+	can_shoot = true
+
+func _on_Area2D_body_entered(body):
+	if body is StaticBody2D:
+		Global.touched_the_wall = true
+		linear_velocity = linear_velocity* 0.5#Vector2(0,0)
+		if shot and !first_time_chargin:
+			animation_state("idle")
+#	if body is RigidBody2D:
+#		if body.get_collision_mask_bit(3):
+
+func animation_state(name):
+	animation_player.play(name)
+
+func _on_fade_of_timeout():
+	if shot:
+		animation_state("idle")
+

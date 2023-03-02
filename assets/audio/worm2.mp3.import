@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/worm2.mp3-f5c11af2a4ef7eabcc8383928b660a7a.mp3str"
+
+[deps]
+
+source_file="res://assets/audio/worm2.mp3"
+dest_files=[ "res://.import/worm2.mp3-f5c11af2a4ef7eabcc8383928b660a7a.mp3str" ]
+
+[params]
+
+loop=false
+loop_offset=0

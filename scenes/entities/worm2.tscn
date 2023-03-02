@@ -1,0 +1,238 @@
+[gd_scene load_steps=14 format=2]
+
+[ext_resource path="res://assets/audio/worm2.mp3" type="AudioStream" id=1]
+[ext_resource path="res://assets/sprites/worm/head/2.png" type="Texture" id=2]
+[ext_resource path="res://assets/sprites/worm/body/3.png" type="Texture" id=3]
+[ext_resource path="res://assets/sprites/worm/head/1.png" type="Texture" id=4]
+[ext_resource path="res://assets/sprites/worm/head/3.png" type="Texture" id=5]
+[ext_resource path="res://assets/sprites/worm/body/1.png" type="Texture" id=6]
+[ext_resource path="res://assets/sprites/worm/body/2.png" type="Texture" id=7]
+
+[sub_resource type="Shader" id=5]
+code = "shader_type canvas_item;
+
+uniform sampler2D dissolve_texture : hint_albedo;
+
+void fragment(){
+    vec4 main_texture = texture(TEXTURE, UV);
+    float dissolve_value = mix(0.5, 0.6, sin(TIME));
+    vec4 noise_texture = texture(dissolve_texture, UV+vec2(10.0*sin(TIME/5.0),10.0*cos(TIME/5.0))/5.0);
+    float mult = floor(dissolve_value + min(1, noise_texture.x));
+    main_texture.g *= mult;
+    main_texture.r -= mult - 0.1;
+    main_texture.g -= mult - 0.1;
+    main_texture.b -= mult - 0.1;
+    COLOR = main_texture;
+}"
+
+[sub_resource type="ShaderMaterial" id=6]
+shader = SubResource( 5 )
+
+[sub_resource type="RectangleShape2D" id=1]
+extents = Vector2( 36, 40 )
+
+[sub_resource type="RectangleShape2D" id=3]
+extents = Vector2( 33, 57 )
+
+[sub_resource type="SpriteFrames" id=4]
+animations = [ {
+"frames": [ ExtResource( 6 ), ExtResource( 7 ), ExtResource( 3 ) ],
+"loop": true,
+"name": "default",
+"speed": 5.0
+} ]
+
+[sub_resource type="SpriteFrames" id=2]
+animations = [ {
+"frames": [ ExtResource( 4 ), ExtResource( 2 ), ExtResource( 5 ) ],
+"loop": true,
+"name": "default",
+"speed": 5.0
+} ]
+
+[node name="worm" type="RigidBody2D"]
+material = SubResource( 6 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="collition" type="CollisionShape2D" parent="."]
+position = Vector2( -4, 0 )
+shape = SubResource( 1 )
+
+[node name="body1" type="RigidBody2D" parent="."]
+collision_layer = 2
+collision_mask = 0
+
+[node name="collition" type="CollisionShape2D" parent="body1"]
+position = Vector2( -1, 71 )
+shape = SubResource( 3 )
+
+[node name="body2" type="RigidBody2D" parent="body1"]
+position = Vector2( 0, 96 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="collition" type="CollisionShape2D" parent="body1/body2"]
+position = Vector2( -1, 71 )
+shape = SubResource( 3 )
+
+[node name="body3" type="RigidBody2D" parent="body1/body2"]
+position = Vector2( 0, 104 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="collition" type="CollisionShape2D" parent="body1/body2/body3"]
+position = Vector2( -1, 71 )
+shape = SubResource( 3 )
+
+[node name="body4" type="RigidBody2D" parent="body1/body2/body3"]
+position = Vector2( 0, 96 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="collition" type="CollisionShape2D" parent="body1/body2/body3/body4"]
+position = Vector2( -1, 71 )
+shape = SubResource( 3 )
+
+[node name="body5" type="RigidBody2D" parent="body1/body2/body3/body4"]
+position = Vector2( 0, 88 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="collition" type="CollisionShape2D" parent="body1/body2/body3/body4/body5"]
+position = Vector2( -1, 71 )
+shape = SubResource( 3 )
+
+[node name="body6" type="RigidBody2D" parent="body1/body2/body3/body4/body5"]
+position = Vector2( 0, 96 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="collition" type="CollisionShape2D" parent="body1/body2/body3/body4/body5/body6"]
+position = Vector2( -1, 71 )
+shape = SubResource( 3 )
+
+[node name="body7" type="RigidBody2D" parent="body1/body2/body3/body4/body5/body6"]
+position = Vector2( 0, 104 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="collition" type="CollisionShape2D" parent="body1/body2/body3/body4/body5/body6/body7"]
+position = Vector2( -1, 71 )
+shape = SubResource( 3 )
+
+[node name="body8" type="RigidBody2D" parent="body1/body2/body3/body4/body5/body6/body7"]
+position = Vector2( 0, 96 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="collition" type="CollisionShape2D" parent="body1/body2/body3/body4/body5/body6/body7/body8"]
+position = Vector2( -1, 71 )
+shape = SubResource( 3 )
+
+[node name="sprite" type="AnimatedSprite" parent="body1/body2/body3/body4/body5/body6/body7/body8"]
+position = Vector2( -1.5, 72 )
+scale = Vector2( 0.965116, 1 )
+frames = SubResource( 4 )
+playing = true
+
+[node name="sprite" type="AnimatedSprite" parent="body1/body2/body3/body4/body5/body6/body7"]
+position = Vector2( -1.5, 72 )
+scale = Vector2( 0.965116, 1 )
+frames = SubResource( 4 )
+playing = true
+
+[node name="7-8" type="PinJoint2D" parent="body1/body2/body3/body4/body5/body6/body7"]
+position = Vector2( 0, 120 )
+node_a = NodePath("..")
+node_b = NodePath("../body8")
+softness = 4.0
+
+[node name="sprite" type="AnimatedSprite" parent="body1/body2/body3/body4/body5/body6"]
+position = Vector2( -1.5, 72 )
+scale = Vector2( 0.965116, 1 )
+frames = SubResource( 4 )
+playing = true
+
+[node name="6-7" type="PinJoint2D" parent="body1/body2/body3/body4/body5/body6"]
+position = Vector2( 0, 128 )
+node_a = NodePath("..")
+node_b = NodePath("../body7")
+softness = 3.0
+
+[node name="sprite" type="AnimatedSprite" parent="body1/body2/body3/body4/body5"]
+position = Vector2( -1.5, 72 )
+scale = Vector2( 0.965116, 1 )
+frames = SubResource( 4 )
+frame = 2
+playing = true
+
+[node name="5-6" type="PinJoint2D" parent="body1/body2/body3/body4/body5"]
+position = Vector2( 0, 120 )
+node_a = NodePath("..")
+node_b = NodePath("../body6")
+softness = 2.0
+
+[node name="sprite" type="AnimatedSprite" parent="body1/body2/body3/body4"]
+position = Vector2( -1.5, 72 )
+scale = Vector2( 0.965116, 1 )
+frames = SubResource( 4 )
+frame = 2
+playing = true
+
+[node name="4-5" type="PinJoint2D" parent="body1/body2/body3/body4"]
+position = Vector2( 0, 120 )
+node_a = NodePath("..")
+node_b = NodePath("../body5")
+
+[node name="sprite" type="AnimatedSprite" parent="body1/body2/body3"]
+position = Vector2( -1.5, 72 )
+scale = Vector2( 0.965116, 1 )
+frames = SubResource( 4 )
+frame = 2
+playing = true
+
+[node name="3-4" type="PinJoint2D" parent="body1/body2/body3"]
+position = Vector2( 0, 120 )
+node_a = NodePath("..")
+node_b = NodePath("../body4")
+softness = 4.0
+
+[node name="sprite" type="AnimatedSprite" parent="body1/body2"]
+position = Vector2( -1.5, 72 )
+scale = Vector2( 0.965116, 1 )
+frames = SubResource( 4 )
+frame = 2
+playing = true
+
+[node name="2-3" type="PinJoint2D" parent="body1/body2"]
+position = Vector2( 0, 128 )
+node_a = NodePath("..")
+node_b = NodePath("../body3")
+softness = 3.0
+
+[node name="sprite" type="AnimatedSprite" parent="body1"]
+position = Vector2( -1.5, 72 )
+scale = Vector2( 0.965116, 1 )
+frames = SubResource( 4 )
+frame = 1
+playing = true
+
+[node name="1-2" type="PinJoint2D" parent="body1"]
+position = Vector2( 0, 120 )
+node_a = NodePath("..")
+node_b = NodePath("../body2")
+softness = 2.0
+
+[node name="sprite" type="AnimatedSprite" parent="."]
+frames = SubResource( 2 )
+frame = 2
+playing = true
+
+[node name="0-1" type="PinJoint2D" parent="."]
+node_a = NodePath("..")
+node_b = NodePath("../body1")
+
+[node name="cry2" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource( 1 )
+autoplay = true

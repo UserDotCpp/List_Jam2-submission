@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/aura_loop.mp3-b91bb38e40ac575dec264ea46e78f6c1.mp3str"
+
+[deps]
+
+source_file="res://assets/audio/aura_loop.mp3"
+dest_files=[ "res://.import/aura_loop.mp3-b91bb38e40ac575dec264ea46e78f6c1.mp3str" ]
+
+[params]
+
+loop=true
+loop_offset=0

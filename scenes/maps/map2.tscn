@@ -1,0 +1,103 @@
+[gd_scene load_steps=6 format=2]
+
+[ext_resource path="res://assets/map_assets/map2/back.png" type="Texture" id=1]
+[ext_resource path="res://scenes/entities/enemy.tscn" type="PackedScene" id=2]
+[ext_resource path="res://scenes/entities/bubble.tscn" type="PackedScene" id=3]
+[ext_resource path="res://scenes/flag.tscn" type="PackedScene" id=4]
+[ext_resource path="res://assets/audio/close_door.mp3" type="AudioStream" id=5]
+
+[node name="map" type="Node2D"]
+position = Vector2( 680, -1064 )
+
+[node name="stage" type="StaticBody2D" parent="."]
+
+[node name="Sprite" type="Sprite" parent="stage"]
+position = Vector2( -216, 232 )
+scale = Vector2( 0.983776, 0.987479 )
+texture = ExtResource( 1 )
+offset = Vector2( 208.381, -219.751 )
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="stage"]
+polygon = PoolVector2Array( -688, 896, -472, 896, -488, 576, -424, 144, -272, -752, -376, -1048, -312, -1096, -120, -1128, 552, -968, 568, -856, 656, -856, 664, -1496, -680, -1504 )
+
+[node name="CollisionPolygon2D2" type="CollisionPolygon2D" parent="stage"]
+polygon = PoolVector2Array( -688, 1056, 88, 1064, 200, 1032, 448, 1064, 560, 952, 600, 408, -24, 384, -24, 320, 584, 328, 600, -272, 88, -280, 96, -336, 608, -336, 584, -696, 664, -680, 664, 1640, -680, 1640 )
+
+[node name="entities" type="Node2D" parent="."]
+
+[node name="enemy" parent="entities" instance=ExtResource( 2 )]
+position = Vector2( -376, -104 )
+rotation = 1.78398
+
+[node name="enemy2" parent="entities" instance=ExtResource( 2 )]
+position = Vector2( 560, 312 )
+rotation = -1.0472
+
+[node name="enemy3" parent="entities" instance=ExtResource( 2 )]
+position = Vector2( 584, -240 )
+rotation = -2.13843
+
+[node name="enemy4" parent="entities" instance=ExtResource( 2 )]
+position = Vector2( 56, 384 )
+rotation = 3.13669
+
+[node name="enemy5" parent="entities" instance=ExtResource( 2 )]
+position = Vector2( 432, 400 )
+rotation = 3.13669
+
+[node name="enemy6" parent="entities" instance=ExtResource( 2 )]
+position = Vector2( 232, -320 )
+rotation = 6.24086
+
+[node name="enemy7" parent="entities" instance=ExtResource( 2 )]
+position = Vector2( 392, -1024 )
+rotation = 3.42011
+
+[node name="enemy8" parent="entities" instance=ExtResource( 2 )]
+position = Vector2( 464, 1008 )
+rotation = -1.0472
+
+[node name="enemy9" parent="entities" instance=ExtResource( 2 )]
+position = Vector2( 168, -280 )
+rotation = -3.19084
+
+[node name="bubble" parent="entities" instance=ExtResource( 3 )]
+position = Vector2( 136, 32 )
+
+[node name="bubble2" parent="entities" instance=ExtResource( 3 )]
+position = Vector2( -216, 920 )
+
+[node name="bubble3" parent="entities" instance=ExtResource( 3 )]
+position = Vector2( -24, -760 )
+
+[node name="enemy10" parent="entities" instance=ExtResource( 2 )]
+position = Vector2( -336, -1064 )
+rotation = 2.17059
+
+[node name="flag" parent="entities" instance=ExtResource( 4 )]
+position = Vector2( -600, 984 )
+blocage_y = 45
+
+[node name="activation_area" parent="entities/flag" index="0"]
+position = Vector2( -32, 0 )
+
+[node name="collision_shape" parent="entities/flag/activation_area" index="0"]
+position = Vector2( 1352, -1776 )
+scale = Vector2( 10, 20 )
+
+[node name="blocage_position" parent="entities/flag" index="1"]
+position = Vector2( -144, -8 )
+
+[node name="next_scene_position" parent="entities/flag" index="2"]
+position = Vector2( 1264, -1664 )
+
+[node name="up" parent="entities/flag" index="3"]
+points = PoolVector2Array( -40, -2120, 1248, -2128 )
+
+[node name="down" parent="entities/flag" index="4"]
+points = PoolVector2Array( -64, 104, 1232, 104 )
+
+[node name="door_closing_sound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 5 )
+
+[editable path="entities/flag"]
