@@ -78,11 +78,13 @@ func spawn_the_worm():
 		x = x.normalized() * x.length()
 		worm_rotation_degrees = real_angle + 90
 
+
 	#$worm/body1.position = worm_spawn_position
 	get_node("worm_place").add_child(worm_instance)
 	worm_instance.z_index = 1
 	worm_instance.position = worm_spawn_position
 	worm_instance.rotation_degrees = worm_rotation_degrees
+
 	yield(get_tree().create_timer(1), "timeout")
 	#worm_instance.rotation_degrees = get_angle_to(worm_direction)
 	worm_instance.apply_central_impulse((worm_direction - worm_spawn_position) * 6)

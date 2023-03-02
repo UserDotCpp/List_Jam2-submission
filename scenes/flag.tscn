@@ -18,11 +18,9 @@ shape = SubResource( 1 )
 [node name="next_scene_position" type="Position2D" parent="."]
 
 [node name="up" type="Line2D" parent="."]
-visible = false
 points = PoolVector2Array( -128, -64, 128, -64 )
 
 [node name="down" type="Line2D" parent="."]
-visible = false
 points = PoolVector2Array( -128, 64, 128, 64 )
 
 [node name="worm_place" type="Node2D" parent="."]
