@@ -1,10 +1,12 @@
-[gd_scene load_steps=13 format=2]
+[gd_scene load_steps=15 format=2]
 
 [ext_resource path="res://scripts/tako.gd" type="Script" id=1]
 [ext_resource path="res://assets/sprites/pepki.png" type="Texture" id=2]
-[ext_resource path="res://assets/audio/aura_loop.mp3" type="AudioStream" id=3]
+[ext_resource path="res://assets/audio/shake.mp3" type="AudioStream" id=3]
 [ext_resource path="res://assets/audio/impulse.mp3" type="AudioStream" id=4]
 [ext_resource path="res://assets/sprites/cursor.png" type="Texture" id=5]
+[ext_resource path="res://assets/audio/hit.mp3" type="AudioStream" id=6]
+[ext_resource path="res://assets/audio/out.mp3" type="AudioStream" id=7]
 
 [sub_resource type="RectangleShape2D" id=3]
 extents = Vector2( 18.75, 49 )
@@ -637,12 +639,21 @@ anims/RESET = SubResource( 9 )
 anims/idle = SubResource( 10 )
 anims/shot = SubResource( 11 )
 
+[node name="hit" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 6 )
+volume_db = -10.331
+pitch_scale = 1.18
+
 [node name="impulse" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource( 4 )
 volume_db = -7.429
 
+[node name="release_gas" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 7 )
+
 [node name="charge" type="AudioStreamPlayer" parent="."]
 stream = ExtResource( 3 )
+volume_db = -7.576
 autoplay = true
 stream_paused = true
 

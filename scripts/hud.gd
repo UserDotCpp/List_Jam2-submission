@@ -20,7 +20,6 @@ func _ready():
 
 func combo_engine():
 	#combo_number.module = Color(0.0, 1.0, 0.0, 1.0)
-	
 	if total_time >= Global.time_of_flag_trigger - 25:
 		$combo_notification.text = " "
 		if !Global.touched_a_hazard:

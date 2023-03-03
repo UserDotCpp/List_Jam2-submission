@@ -62,6 +62,8 @@ func _input(event):
 		power = 1
 		ui.hide()
 	if Input.is_action_just_pressed("rightMouse"):
+		$release_gas.pitch_scale = 0 +(randi() % 21 + 1)*0.10
+		$release_gas.play()
 		linear_velocity = linear_velocity* 0.05
 		animation_state("shot")
 		fade_of_timer.start()#power*0.01)
@@ -73,6 +75,8 @@ func _on_monitor_input_event(_viewport, _event, _shape_idx):
 
 func _on_Area2D_body_entered(body):
 	if body is StaticBody2D:
+		$hit.pitch_scale = 1 + (randi() % 20 + 1)/10
+		$hit.play()
 		Global.touched_the_wall = true
 		linear_velocity = linear_velocity* 0.5#Vector2(0,0)
 		if shot and !first_time_chargin:
@@ -86,4 +90,3 @@ func animation_state(name):
 func _on_fade_of_timeout():
 	if shot:
 		animation_state("idle")
-

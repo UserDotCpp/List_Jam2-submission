@@ -1,10 +1,11 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://scenes/entities/bubble.tscn" type="PackedScene" id=1]
 [ext_resource path="res://scenes/entities/enemy.tscn" type="PackedScene" id=2]
 [ext_resource path="res://scenes/flag.tscn" type="PackedScene" id=3]
 [ext_resource path="res://assets/map_assets/map1/back.png" type="Texture" id=4]
 [ext_resource path="res://assets/audio/close_door.mp3" type="AudioStream" id=5]
+[ext_resource path="res://scenes/entities/door.tscn" type="PackedScene" id=6]
 
 [node name="Node2D" type="Node2D"]
 
@@ -33,7 +34,7 @@ position = Vector2( 832, 504 )
 position = Vector2( 976, 336 )
 
 [node name="bubble2" parent="entities" instance=ExtResource( 1 )]
-position = Vector2( 1368, 368 )
+position = Vector2( 1266, 363 )
 
 [node name="flag" parent="entities" instance=ExtResource( 3 )]
 position = Vector2( 1160, 432 )
@@ -51,11 +52,24 @@ position = Vector2( -1104, 136 )
 position = Vector2( 248, -8 )
 
 [node name="up" parent="entities/flag" index="3"]
+position = Vector2( -23, -96 )
 points = PoolVector2Array( -1104, -296, 216, -336 )
 default_color = Color( 0.4, 0.501961, 1, 1 )
 
+[node name="up" parent="entities/flag/up" index="0"]
+position = Vector2( -475, -646 )
+scale = Vector2( 1.35092, 1.00146 )
+
 [node name="down" parent="entities/flag" index="4"]
+position = Vector2( -20, 113 )
 points = PoolVector2Array( -1080, 216, 192, 200 )
+
+[node name="down" parent="entities/flag/down" index="0"]
+position = Vector2( -509, 562 )
+scale = Vector2( 1.23327, 1.07728 )
+
+[node name="door" parent="entities" instance=ExtResource( 6 )]
+position = Vector2( 1092, 366 )
 
 [node name="door_closing_sound" type="AudioStreamPlayer" parent="."]
 stream = ExtResource( 5 )
