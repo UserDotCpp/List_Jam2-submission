@@ -51,11 +51,21 @@ position = Vector2( -1104, 136 )
 position = Vector2( 248, -8 )
 
 [node name="up" parent="entities/flag" index="3"]
+position = Vector2( -23, -96 )
 points = PoolVector2Array( -1104, -296, 216, -336 )
 default_color = Color( 0.4, 0.501961, 1, 1 )
 
+[node name="up" parent="entities/flag/up" index="0"]
+position = Vector2( -475, -646 )
+scale = Vector2( 1.35092, 1.00146 )
+
 [node name="down" parent="entities/flag" index="4"]
+position = Vector2( -20, 113 )
 points = PoolVector2Array( -1080, 216, 192, 200 )
+
+[node name="down" parent="entities/flag/down" index="0"]
+position = Vector2( -525, 567 )
+scale = Vector2( 1.23327, 1.07728 )
 
 [node name="door_closing_sound" type="AudioStreamPlayer" parent="."]
 stream = ExtResource( 5 )

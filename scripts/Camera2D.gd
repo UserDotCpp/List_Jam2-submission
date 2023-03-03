@@ -21,11 +21,12 @@ var player: Node2D
 func _ready():
 # warning-ignore:return_value_discarded
 	Global.connect("screen_shake",self,"apply_shake")
+# warning-ignore:return_value_discarded
 	Global.connect("move_camera", self, "_on_move_camera")
 	player = get_node(player_path)
 	rand.randomize()
 	
-func _physics_process(delta):
+func _physics_process(_delta):
 #	if !follow_tako:
 #		return
 	position = lerp(position, player.position, 0.03)#position = lerp(position, target_pos, 0.03)

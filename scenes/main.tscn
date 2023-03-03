@@ -19,6 +19,7 @@ player_path = NodePath("../tako")
 [node name="Sprite" type="Sprite" parent="camera"]
 position = Vector2( 709, 248 )
 scale = Vector2( 2.40781, 2.4 )
+z_index = -5
 texture = ExtResource( 4 )
 
 [node name="level" type="Node2D" parent="."]

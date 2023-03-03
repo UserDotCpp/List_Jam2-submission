@@ -71,21 +71,17 @@ func spawn_the_worm():
 		worm_direction = Vector2(rng.randf_range(up.x, up.y),up.z)
 		var direction = worm_direction - worm_spawn_position
 		var real_angle = (direction.angle() * 180) / PI
-
 		$direction_line.set_point_position(0, worm_spawn_position)
 		$direction_line.set_point_position(1, worm_direction)
 		var x = worm_direction - worm_spawn_position
 		x = x.normalized() * x.length()
 		worm_rotation_degrees = real_angle + 90
-
-
 	#$worm/body1.position = worm_spawn_position
 	get_node("worm_place").add_child(worm_instance)
 	worm_instance.z_index = 1
 	worm_instance.position = worm_spawn_position
 	worm_instance.rotation_degrees = worm_rotation_degrees
-
-	yield(get_tree().create_timer(1), "timeout")
+	#yield(get_tree().create_timer(1), "timeout")
 	#worm_instance.rotation_degrees = get_angle_to(worm_direction)
 	worm_instance.apply_central_impulse((worm_direction - worm_spawn_position) * 6)
 	worm_exist = true
@@ -93,7 +89,7 @@ func spawn_the_worm():
 func _on_activation_area_body_entered(body):
 	if body.to_string().begins_with ("tako:"):
 		if kill_scene != "" and Global.flag_passed:
-			call_deferred("delete_old_scene")
+			delete_old_scene()
 		if next_scene != "":
 			call_deferred("instance_new_scene")
 		if blocage_x != 0 and blocage_y != 0:
@@ -120,13 +116,14 @@ func instance_new_scene():
 	get_parent().get_parent().get_parent().add_child(scene)
 	Global.last_map_name = str(get_parent().get_parent())
 	Global.flag_passed = true
+	
 func delete_old_scene():
-	get_parent().get_parent().get_parent().get_node(Global.last_map_name).get_node("door_closing_sound").play()
-	$die.start()
-
+	get_parent().get_parent().get_parent().get_node(str("m",Global.map_counter-1)).get_node("door_closing_sound").play()#Global.last_map_name).get_node("door_closing_sound").play()
+	call_deferred("on_die")
+	#$die.start()
 func die():
 	queue_free()
 
-func _on_die_timeout():
+func on_die():
 	get_parent().get_parent().get_parent().get_node(Global.last_map_name).call_deferred("queue_free")
 	Global.flag_passed = false

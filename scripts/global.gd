@@ -3,7 +3,7 @@ extends Node
 var last_map_name = ""
 var last_map_number_id = 0
 var flag_passed = false
-var map_counter = 1
+var map_counter = 0
 var touched_the_wall = false
 var touched_a_hazard  = false
 var time_of_flag_trigger

@@ -1,6 +1,7 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=4 format=2]
 
 [ext_resource path="res://scripts/flag.gd" type="Script" id=1]
+[ext_resource path="res://assets/sprites/black_box.png" type="Texture" id=2]
 
 [sub_resource type="RectangleShape2D" id=1]
 
@@ -20,8 +21,20 @@ shape = SubResource( 1 )
 [node name="up" type="Line2D" parent="."]
 points = PoolVector2Array( -128, -64, 128, -64 )
 
+[node name="up" type="Sprite" parent="up"]
+position = Vector2( 22.7497, -311 )
+scale = Vector2( 0.874609, 0.702083 )
+z_index = 2
+texture = ExtResource( 2 )
+
 [node name="down" type="Line2D" parent="."]
 points = PoolVector2Array( -128, 64, 128, 64 )
+
+[node name="down" type="Sprite" parent="down"]
+position = Vector2( 26.3752, 303 )
+scale = Vector2( 0.874414, 0.667361 )
+z_index = 2
+texture = ExtResource( 2 )
 
 [node name="worm_place" type="Node2D" parent="."]
 
