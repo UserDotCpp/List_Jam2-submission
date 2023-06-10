@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/change photo.mp3-23cc2344e4a5be766e3866fabdb47b00.mp3str"
+
+[deps]
+
+source_file="res://assets/audio/change photo.mp3"
+dest_files=[ "res://.import/change photo.mp3-23cc2344e4a5be766e3866fabdb47b00.mp3str" ]
+
+[params]
+
+loop=true
+loop_offset=0

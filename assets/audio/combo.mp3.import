@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/combo.mp3-090550aa87fc45bd2724d2b411b9efac.mp3str"
+
+[deps]
+
+source_file="res://assets/audio/combo.mp3"
+dest_files=[ "res://.import/combo.mp3-090550aa87fc45bd2724d2b411b9efac.mp3str" ]
+
+[params]
+
+loop=false
+loop_offset=0

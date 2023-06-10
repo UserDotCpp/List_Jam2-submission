@@ -1,0 +1,1486 @@
+[gd_scene load_steps=54 format=2]
+
+[ext_resource path="res://assets/sprites/black_box.png" type="Texture" id=1]
+[ext_resource path="res://assets/audio/shake.mp3" type="AudioStream" id=2]
+[ext_resource path="res://assets/sprites/cursor.png" type="Texture" id=3]
+[ext_resource path="res://assets/sprites/pepki.png" type="Texture" id=4]
+[ext_resource path="res://assets/audio/hit.mp3" type="AudioStream" id=5]
+[ext_resource path="res://assets/audio/out.mp3" type="AudioStream" id=6]
+[ext_resource path="res://assets/sprites/oxygen/1.png" type="Texture" id=7]
+[ext_resource path="res://assets/audio/impulse.mp3" type="AudioStream" id=8]
+[ext_resource path="res://assets/audio/worm3.mp3" type="AudioStream" id=9]
+[ext_resource path="res://scripts/sinematic/sinematicCamera.gd" type="Script" id=10]
+[ext_resource path="res://assets/sprites/worm/body/2.png" type="Texture" id=11]
+[ext_resource path="res://scripts/sinematic/sinematicMain.gd" type="Script" id=12]
+[ext_resource path="res://scripts/sinematic/sinematicTako.gd" type="Script" id=13]
+[ext_resource path="res://assets/audio/under_watta.mp3" type="AudioStream" id=14]
+[ext_resource path="res://assets/sprites/worm/head/1.png" type="Texture" id=15]
+[ext_resource path="res://assets/sprites/worm/head/3.png" type="Texture" id=16]
+[ext_resource path="res://assets/sprites/spot_light.png" type="Texture" id=17]
+[ext_resource path="res://assets/shaders/watta.gdshader" type="Shader" id=18]
+[ext_resource path="res://assets/audio/close_door.mp3" type="AudioStream" id=19]
+[ext_resource path="res://assets/sprites/worm/body/1.png" type="Texture" id=20]
+[ext_resource path="res://scenes/entities/door.tscn" type="PackedScene" id=21]
+[ext_resource path="res://scripts/sinematic/sinematicFlag.gd" type="Script" id=22]
+[ext_resource path="res://assets/map_assets/mapB1/backT.png" type="Texture" id=23]
+[ext_resource path="res://assets/map_assets/mapB1/frontT.png" type="Texture" id=24]
+[ext_resource path="res://assets/sprites/enemy/1.png" type="Texture" id=25]
+[ext_resource path="res://assets/map_assets/map0-1/back.png" type="Texture" id=26]
+[ext_resource path="res://assets/font/digital.tres" type="DynamicFont" id=27]
+[ext_resource path="res://assets/sprites/enemy/2.png" type="Texture" id=28]
+[ext_resource path="res://assets/sprites/enemy/3.png" type="Texture" id=29]
+[ext_resource path="res://assets/sprites/worm/body/3.png" type="Texture" id=30]
+[ext_resource path="res://assets/sprites/worm/head/2.png" type="Texture" id=31]
+[ext_resource path="res://scripts/enemy.gd" type="Script" id=32]
+
+[sub_resource type="RectangleShape2D" id=1]
+
+[sub_resource type="RectangleShape2D" id=4]
+extents = Vector2( 35, 25 )
+
+[sub_resource type="SpriteFrames" id=3]
+animations = [ {
+"frames": [ ExtResource( 25 ), ExtResource( 28 ), ExtResource( 29 ) ],
+"loop": true,
+"name": "default",
+"speed": 5.0
+} ]
+
+[sub_resource type="RectangleShape2D" id=2]
+extents = Vector2( 168, 102.063 )
+
+[sub_resource type="RectangleShape2D" id=5]
+extents = Vector2( 72, 80 )
+
+[sub_resource type="RectangleShape2D" id=6]
+extents = Vector2( 66, 114 )
+
+[sub_resource type="SpriteFrames" id=7]
+animations = [ {
+"frames": [ ExtResource( 20 ), ExtResource( 11 ), ExtResource( 30 ) ],
+"loop": true,
+"name": "default",
+"speed": 5.0
+} ]
+
+[sub_resource type="SpriteFrames" id=8]
+animations = [ {
+"frames": [ ExtResource( 15 ), ExtResource( 31 ), ExtResource( 16 ) ],
+"loop": true,
+"name": "default",
+"speed": 5.0
+} ]
+
+[sub_resource type="ShaderMaterial" id=20]
+shader = ExtResource( 18 )
+shader_param/iteration_times = 1
+shader_param/speed = 1.0
+shader_param/color = Color( 0, 0.35, 0.5, 1 )
+shader_param/intensity = 0.005
+
+[sub_resource type="Shader" id=31]
+code = "//https://godotshaders.com/shader/old-movie-shader/
+shader_type canvas_item;
+
+uniform float projector_power : hint_range(0,1) = 0.5;
+uniform sampler2D distortionTexture;
+uniform float vignette_param: hint_range(1,10)=20.0;
+
+//vars related to the passing lines
+
+
+//noise for the projector flickering
+float noise(vec2 input){
+	return fract(sin(dot(input,vec2(3.1415,8952.37)*12.29))*93.116);
+}
+
+void fragment() {
+	//vignette-related:
+	float vignette_param2 =vignette_param+0.5*(noise(vec2(TIME/60.0,TIME/59.0)));
+	float vig=-vignette_param2*((UV.x-0.5)*(UV.x-0.5)+(UV.y-0.5)*(UV.y-0.5));
+	vec4 vignette=vec4(vig,vig,vig,1.0);
+
+	//grayscale-related:
+	vec4 pixelcolor = texture(SCREEN_TEXTURE, SCREEN_UV);
+	float brightness = (.299*pixelcolor.r + 0.487*pixelcolor.g + 0.114*pixelcolor.b);
+	vec4 grayscale= vec4(brightness,brightness,brightness,pixelcolor.a);
+	
+	//random-fluctuation:
+	vec4 random=texture(distortionTexture,UV);
+	
+	//Small speckles:
+	float RTIME1=round(TIME*20.0);
+	vec2 position1=vec2(noise(vec2(RTIME1,RTIME1)),noise(vec2(RTIME1/2.0,RTIME1/2.0)));
+	float energy= 1000000.0*(1.0+0.5*noise(vec2(RTIME1,RTIME1)));
+	float xdev1=(UV.x-position1.x);
+	float ydev1=(UV.y-position1.y);
+	float spec=energy*(xdev1*xdev1+0.5*ydev1*ydev1)+.1*noise(vec2(UV.x,UV.y));
+	vec4 speckle=vec4(max(0.0,20.0-spec),max(0.0,20.0-spec),max(0.0,20.0-spec),1.0);
+	
+	//lines:
+	float RTIME2=round(TIME*5.0);
+	vec2 positionline=vec2(noise(vec2(RTIME2,RTIME2))/4.0,noise(vec2(RTIME2/3.0,RTIME2/3.0)));
+	float xline=(UV.x-positionline.x);
+	float yline=(UV.y-positionline.y);
+	float lin=energy*(xline*xline+0.00001*yline*yline)+.1*noise(vec2(UV.x,UV.y));
+	vec4 line=vec4(max(0.0,8.0-lin),max(0.0,8.0-lin),max(0.0,8.0-lin),1.0);
+	
+	//combining-the parts:
+	vec4 dirt=mix(speckle,line,0.5);
+	vec4 grayscale2=mix(random,vignette,0.7);
+	vec4 grayscale3=mix(dirt,grayscale2,0.7);
+	COLOR = mix(grayscale, grayscale3, projector_power);
+}"
+
+[sub_resource type="ShaderMaterial" id=32]
+shader = SubResource( 31 )
+shader_param/projector_power = 0.5
+shader_param/vignette_param = 20.0
+
+[sub_resource type="Animation" id=29]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:self_modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Color( 1, 1, 1, 1 ) ]
+}
+
+[sub_resource type="Animation" id=30]
+resource_name = "idle"
+loop = true
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:self_modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.4, 0.8 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 0,
+"values": [ Color( 1, 1, 1, 1 ), Color( 1, 1, 1, 0 ), Color( 1, 1, 1, 0.833333 ) ]
+}
+
+[sub_resource type="RectangleShape2D" id=21]
+extents = Vector2( 18.75, 49 )
+
+[sub_resource type="RectangleShape2D" id=33]
+extents = Vector2( 101, 92.5 )
+
+[sub_resource type="RectangleShape2D" id=34]
+extents = Vector2( 24, 36 )
+
+[sub_resource type="Animation" id=14]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:offset")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Vector2( 0, 0 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath(".:frame")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ 0 ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath(".:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray(  ),
+"transitions": PoolRealArray(  ),
+"update": 0,
+"values": [  ]
+}
+tracks/3/type = "value"
+tracks/3/path = NodePath("../charge:autoplay")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ true ]
+}
+tracks/4/type = "value"
+tracks/4/path = NodePath("../charge:stream_paused")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ true ]
+}
+tracks/5/type = "value"
+tracks/5/path = NodePath("../impulse:playing")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ false ]
+}
+tracks/6/type = "value"
+tracks/6/path = NodePath("../impulse:stream:loop")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ false ]
+}
+tracks/7/type = "value"
+tracks/7/path = NodePath("..:collision_mask")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ 2 ]
+}
+tracks/8/type = "value"
+tracks/8/path = NodePath("../hitbox:scale")
+tracks/8/interp = 1
+tracks/8/loop_wrap = true
+tracks/8/imported = false
+tracks/8/enabled = true
+tracks/8/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Vector2( 1, 0.8 ) ]
+}
+tracks/9/type = "value"
+tracks/9/path = NodePath("../hitbox:position")
+tracks/9/interp = 1
+tracks/9/loop_wrap = true
+tracks/9/imported = false
+tracks/9/enabled = true
+tracks/9/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Vector2( 0, -4 ) ]
+}
+tracks/10/type = "value"
+tracks/10/path = NodePath("../hitbox:shape:extents")
+tracks/10/interp = 1
+tracks/10/loop_wrap = true
+tracks/10/imported = false
+tracks/10/enabled = true
+tracks/10/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Vector2( 18.75, 49 ) ]
+}
+tracks/11/type = "value"
+tracks/11/path = NodePath(".:hframes")
+tracks/11/interp = 1
+tracks/11/loop_wrap = true
+tracks/11/imported = false
+tracks/11/enabled = true
+tracks/11/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ 6 ]
+}
+tracks/12/type = "value"
+tracks/12/path = NodePath(".:region_rect")
+tracks/12/interp = 1
+tracks/12/loop_wrap = true
+tracks/12/imported = false
+tracks/12/enabled = true
+tracks/12/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Rect2( 563, 21, 297, 91 ) ]
+}
+tracks/13/type = "value"
+tracks/13/path = NodePath("../back_part:visible")
+tracks/13/interp = 1
+tracks/13/loop_wrap = true
+tracks/13/imported = false
+tracks/13/enabled = true
+tracks/13/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ false ]
+}
+
+[sub_resource type="Animation" id=15]
+resource_name = "charging shot"
+length = 0.5
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:region_rect")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Rect2( 563, 21, 297, 91 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath(".:hframes")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ 4 ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath(".:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0, 0.1, 0.2, 0.3 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"update": 1,
+"values": [ Vector2( 7.27596e-12, 17 ), Vector2( 0, 9 ), Vector2( 0, 4 ), Vector2( 0, 0 ) ]
+}
+tracks/3/type = "value"
+tracks/3/path = NodePath(".:frame")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/keys = {
+"times": PoolRealArray( 0, 0.1, 0.2, 0.3 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"update": 1,
+"values": [ 0, 1, 2, 3 ]
+}
+tracks/4/type = "value"
+tracks/4/path = NodePath(".:offset")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Vector2( -5, 5 ) ]
+}
+tracks/5/type = "value"
+tracks/5/path = NodePath("../charge:stream_paused")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ false ]
+}
+tracks/6/type = "value"
+tracks/6/path = NodePath("..:collision_mask")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ 2 ]
+}
+tracks/7/type = "value"
+tracks/7/path = NodePath("../hitbox:shape:extents")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/keys = {
+"times": PoolRealArray( 0, 0.1, 0.2, 0.3 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"update": 0,
+"values": [ Vector2( 21, 45.125 ), Vector2( 22, 36.375 ), Vector2( 26.5, 28.25 ), Vector2( 32, 24.5 ) ]
+}
+tracks/8/type = "value"
+tracks/8/path = NodePath("../hitbox:position")
+tracks/8/interp = 1
+tracks/8/loop_wrap = true
+tracks/8/imported = false
+tracks/8/enabled = true
+tracks/8/keys = {
+"times": PoolRealArray( 0, 0.1, 0.2, 0.3 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"update": 0,
+"values": [ Vector2( -3.1, -4 ), Vector2( -10.1, -4 ), Vector2( -16.6, -4.5 ), Vector2( -19.6, -5 ) ]
+}
+tracks/9/type = "value"
+tracks/9/path = NodePath("../hitbox:scale")
+tracks/9/interp = 1
+tracks/9/loop_wrap = true
+tracks/9/imported = false
+tracks/9/enabled = true
+tracks/9/keys = {
+"times": PoolRealArray( 0, 0.1 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Vector2( 1, 0.8 ), Vector2( 1, 0.8 ) ]
+}
+tracks/10/type = "value"
+tracks/10/path = NodePath("../back_part:visible")
+tracks/10/interp = 1
+tracks/10/loop_wrap = true
+tracks/10/imported = false
+tracks/10/enabled = true
+tracks/10/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ false ]
+}
+
+[sub_resource type="Animation" id=16]
+resource_name = "idle"
+length = 0.8
+loop = true
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:region_rect")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Rect2( 10, 12, 326, 100 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath(".:hframes")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ 7 ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath(".:frame")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1, 1, 1 ),
+"update": 1,
+"values": [ 0, 1, 2, 3, 4, 5, 0 ]
+}
+tracks/3/type = "value"
+tracks/3/path = NodePath(".:offset")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/keys = {
+"times": PoolRealArray( 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1, 1, 1, 1 ),
+"update": 1,
+"values": [ Vector2( -1.5, 0 ), Vector2( -4.5, 0 ), Vector2( -5.5, 0 ), Vector2( -7.5, 0 ), Vector2( -9.5, 0 ), Vector2( -1.5, 0 ), Vector2( -0.5, 0 ), Vector2( -1.5, 0 ) ]
+}
+tracks/4/type = "value"
+tracks/4/path = NodePath(".:position")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Vector2( 0, 1 ) ]
+}
+tracks/5/type = "value"
+tracks/5/path = NodePath("../charge:stream_paused")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ true ]
+}
+tracks/6/type = "value"
+tracks/6/path = NodePath("../impulse:playing")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ false ]
+}
+tracks/7/type = "value"
+tracks/7/path = NodePath("..:collision_mask")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ 2 ]
+}
+tracks/8/type = "value"
+tracks/8/path = NodePath("../hitbox:shape:extents")
+tracks/8/interp = 1
+tracks/8/loop_wrap = true
+tracks/8/imported = false
+tracks/8/enabled = true
+tracks/8/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Vector2( 18.75, 49 ) ]
+}
+tracks/9/type = "value"
+tracks/9/path = NodePath("../hitbox:position")
+tracks/9/interp = 1
+tracks/9/loop_wrap = true
+tracks/9/imported = false
+tracks/9/enabled = true
+tracks/9/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Vector2( 0, -4 ) ]
+}
+tracks/10/type = "value"
+tracks/10/path = NodePath("../hitbox:scale")
+tracks/10/interp = 1
+tracks/10/loop_wrap = true
+tracks/10/imported = false
+tracks/10/enabled = true
+tracks/10/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Vector2( 1, 0.8 ) ]
+}
+tracks/11/type = "value"
+tracks/11/path = NodePath("../back_part:visible")
+tracks/11/interp = 1
+tracks/11/loop_wrap = true
+tracks/11/imported = false
+tracks/11/enabled = true
+tracks/11/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ false ]
+}
+
+[sub_resource type="Animation" id=17]
+resource_name = "shot"
+length = 0.2
+loop = true
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:region_rect")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Rect2( 410, 12, 134, 99 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath(".:hframes")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ 3 ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath(".:frame")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0, 0.1, 0.2 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 1,
+"values": [ 0, 1, 2 ]
+}
+tracks/3/type = "value"
+tracks/3/path = NodePath(".:offset")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/keys = {
+"times": PoolRealArray( 0, 0.1, 0.2 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 0,
+"values": [ Vector2( 0, 0 ), Vector2( -3.5, 0 ), Vector2( -5.5, 0 ) ]
+}
+tracks/4/type = "value"
+tracks/4/path = NodePath(".:position")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Vector2( 0, -1 ) ]
+}
+tracks/5/type = "value"
+tracks/5/path = NodePath("../charge:stream_paused")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ true ]
+}
+tracks/6/type = "value"
+tracks/6/path = NodePath("../impulse:stream:loop")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ false ]
+}
+tracks/7/type = "value"
+tracks/7/path = NodePath("../impulse:playing")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ true ]
+}
+tracks/8/type = "value"
+tracks/8/path = NodePath("..:collision_mask")
+tracks/8/interp = 1
+tracks/8/loop_wrap = true
+tracks/8/imported = false
+tracks/8/enabled = true
+tracks/8/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ 0 ]
+}
+tracks/9/type = "value"
+tracks/9/path = NodePath("../hitbox:shape:extents")
+tracks/9/interp = 1
+tracks/9/loop_wrap = true
+tracks/9/imported = false
+tracks/9/enabled = true
+tracks/9/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Vector2( 18.75, 49 ) ]
+}
+tracks/10/type = "value"
+tracks/10/path = NodePath("../hitbox:position")
+tracks/10/interp = 1
+tracks/10/loop_wrap = true
+tracks/10/imported = false
+tracks/10/enabled = true
+tracks/10/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Vector2( 0, -4 ) ]
+}
+tracks/11/type = "value"
+tracks/11/path = NodePath("../hitbox:scale")
+tracks/11/interp = 1
+tracks/11/loop_wrap = true
+tracks/11/imported = false
+tracks/11/enabled = true
+tracks/11/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Vector2( 1, 0.8 ) ]
+}
+tracks/12/type = "value"
+tracks/12/path = NodePath("../back_part:visible")
+tracks/12/interp = 1
+tracks/12/loop_wrap = true
+tracks/12/imported = false
+tracks/12/enabled = true
+tracks/12/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ true ]
+}
+
+[sub_resource type="ParticlesMaterial" id=13]
+lifetime_randomness = 0.07
+flag_disable_z = true
+direction = Vector3( 0, 1, 0 )
+spread = 62.96
+gravity = Vector3( -100, 0, 0 )
+orbit_velocity = 0.0
+orbit_velocity_random = 0.0
+
+[node name="main" type="Node2D"]
+position = Vector2( 126, -134 )
+script = ExtResource( 12 )
+
+[node name="camera" type="Camera2D" parent="."]
+position = Vector2( -630, -115 )
+rotating = true
+current = true
+script = ExtResource( 10 )
+follow_tako = true
+player_path = NodePath("../tako")
+
+[node name="Sprite" type="Sprite" parent="camera"]
+visible = false
+position = Vector2( 709, 248 )
+scale = Vector2( 2.40781, 2.4 )
+z_index = -5
+texture = ExtResource( 1 )
+
+[node name="sea" type="Sprite" parent="camera"]
+visible = false
+position = Vector2( 709, 248 )
+scale = Vector2( 2.40781, 2.4 )
+z_index = -5
+texture = ExtResource( 26 )
+
+[node name="level" type="Node2D" parent="."]
+position = Vector2( -625, -114 )
+
+[node name="m0" type="Node2D" parent="level"]
+position = Vector2( -126, -505 )
+
+[node name="stage" type="StaticBody2D" parent="level/m0"]
+
+[node name="front" type="Sprite" parent="level/m0/stage"]
+position = Vector2( 898, 12.9999 )
+scale = Vector2( 1.44271, 1.37037 )
+z_index = 3
+texture = ExtResource( 24 )
+
+[node name="back" type="Sprite" parent="level/m0/stage"]
+position = Vector2( 898, 37 )
+scale = Vector2( 1.44245, 1.30324 )
+z_index = -2
+texture = ExtResource( 23 )
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="level/m0/stage"]
+polygon = PoolVector2Array( -478, 244, 222, 232, 264, 269, 288, 368, 575, 413, 829, 423, 978, 395, 989, 408, 1032, 402, 1110, 449, 1037, 352, 1020, 208, 1089, 139, 1456, 95, 2063, 94, 2202, 274, 2283, 278, 2285, -46, -722, -14, -728, 946, 2313, 934, 2304, 393, 2204, 404, 2144, 633, 1789, 644, 1561, 573, 1554, 368, 1146, 353, 1161, 398, 1440, 405, 1441, 527, 1368, 567, 1248, 537, 918, 552, 897, 584, 704, 576, 604, 611, 390, 593, 373, 675, 289, 734, -475, 713 )
+
+[node name="CollisionPolygon2D2" type="CollisionPolygon2D" parent="level/m0/stage"]
+polygon = PoolVector2Array( 99, 320, 175, 315, 212, 674, 148, 684 )
+
+[node name="entities" type="Node2D" parent="level/m0"]
+
+[node name="flag" type="Node2D" parent="level/m0/entities"]
+position = Vector2( 1160, 432 )
+script = ExtResource( 22 )
+
+[node name="activation_area" type="Area2D" parent="level/m0/entities/flag"]
+
+[node name="collision_shape" type="CollisionShape2D" parent="level/m0/entities/flag/activation_area"]
+position = Vector2( 1090, -115 )
+scale = Vector2( 5, 10 )
+shape = SubResource( 1 )
+
+[node name="blocage_position" type="Position2D" parent="level/m0/entities/flag"]
+position = Vector2( -1605, 219 )
+
+[node name="next_scene_position" type="Position2D" parent="level/m0/entities/flag"]
+position = Vector2( 1141, -60 )
+
+[node name="up2" type="Sprite" parent="level/m0/entities/flag"]
+visible = false
+position = Vector2( -537, -725 )
+scale = Vector2( 1.19461, 0.702083 )
+z_index = 3
+texture = ExtResource( 1 )
+
+[node name="down2" type="Sprite" parent="level/m0/entities/flag"]
+visible = false
+position = Vector2( -540, 594 )
+scale = Vector2( 1.16819, 0.667361 )
+z_index = 3
+texture = ExtResource( 1 )
+
+[node name="worm_place" type="Node2D" parent="level/m0/entities/flag"]
+
+[node name="die" type="Timer" parent="level/m0/entities/flag"]
+wait_time = 0.136
+
+[node name="spawn_delay" type="Timer" parent="level/m0/entities/flag"]
+wait_time = 0.5
+
+[node name="direction_line" type="Line2D" parent="level/m0/entities/flag"]
+points = PoolVector2Array( 0, 0, 0, 0 )
+default_color = Color( 0.188235, 0.203922, 0.27451, 0.392157 )
+
+[node name="door" parent="level/m0/entities" instance=ExtResource( 21 )]
+position = Vector2( 1912, 335 )
+
+[node name="1" type="RigidBody2D" parent="level/m0/entities"]
+position = Vector2( 621, 647 )
+rotation = -1.38345
+collision_layer = 7
+collision_mask = 4
+mode = 1
+contact_monitor = true
+script = ExtResource( 32 )
+
+[node name="hitbox" type="CollisionShape2D" parent="level/m0/entities/1"]
+position = Vector2( -1, 17 )
+shape = SubResource( 4 )
+disabled = true
+
+[node name="AnimatedSprite" type="AnimatedSprite" parent="level/m0/entities/1"]
+modulate = Color( 0.678431, 0.678431, 0.678431, 1 )
+position = Vector2( 8, -72 )
+scale = Vector2( 0.622584, 0.642371 )
+frames = SubResource( 3 )
+frame = 1
+playing = true
+
+[node name="monitor" type="Area2D" parent="level/m0/entities/1"]
+
+[node name="monitor_shape" type="CollisionShape2D" parent="level/m0/entities/1/monitor"]
+position = Vector2( 8, -105.938 )
+shape = SubResource( 2 )
+
+[node name="2" type="RigidBody2D" parent="level/m0/entities"]
+position = Vector2( 594, 374 )
+rotation = -2.07452
+collision_layer = 7
+collision_mask = 4
+mode = 1
+contact_monitor = true
+script = ExtResource( 32 )
+
+[node name="hitbox" type="CollisionShape2D" parent="level/m0/entities/2"]
+position = Vector2( -1, 17 )
+shape = SubResource( 4 )
+disabled = true
+
+[node name="AnimatedSprite" type="AnimatedSprite" parent="level/m0/entities/2"]
+modulate = Color( 0.678431, 0.678431, 0.678431, 1 )
+position = Vector2( 8, -72 )
+scale = Vector2( 0.622584, 0.642371 )
+frames = SubResource( 3 )
+frame = 1
+playing = true
+
+[node name="monitor" type="Area2D" parent="level/m0/entities/2"]
+
+[node name="monitor_shape" type="CollisionShape2D" parent="level/m0/entities/2/monitor"]
+position = Vector2( 8, -105.938 )
+shape = SubResource( 2 )
+
+[node name="3" type="RigidBody2D" parent="level/m0/entities"]
+position = Vector2( 805, 380 )
+rotation = -2.07452
+collision_layer = 7
+collision_mask = 4
+mode = 1
+contact_monitor = true
+script = ExtResource( 32 )
+
+[node name="hitbox" type="CollisionShape2D" parent="level/m0/entities/3"]
+position = Vector2( -1, 17 )
+shape = SubResource( 4 )
+disabled = true
+
+[node name="AnimatedSprite" type="AnimatedSprite" parent="level/m0/entities/3"]
+modulate = Color( 0.678431, 0.678431, 0.678431, 1 )
+position = Vector2( 8, -72 )
+scale = Vector2( 0.622584, 0.642371 )
+frames = SubResource( 3 )
+playing = true
+
+[node name="monitor" type="Area2D" parent="level/m0/entities/3"]
+
+[node name="monitor_shape" type="CollisionShape2D" parent="level/m0/entities/3/monitor"]
+position = Vector2( 8, -105.938 )
+shape = SubResource( 2 )
+
+[node name="4" type="RigidBody2D" parent="level/m0/entities"]
+position = Vector2( 999, 365 )
+rotation = -2.07452
+collision_layer = 7
+collision_mask = 4
+mode = 1
+contact_monitor = true
+script = ExtResource( 32 )
+
+[node name="hitbox" type="CollisionShape2D" parent="level/m0/entities/4"]
+position = Vector2( -1, 17 )
+shape = SubResource( 4 )
+disabled = true
+
+[node name="AnimatedSprite" type="AnimatedSprite" parent="level/m0/entities/4"]
+modulate = Color( 0.678431, 0.678431, 0.678431, 1 )
+position = Vector2( 8, -72 )
+scale = Vector2( 0.622584, 0.642371 )
+frames = SubResource( 3 )
+playing = true
+
+[node name="monitor" type="Area2D" parent="level/m0/entities/4"]
+
+[node name="monitor_shape" type="CollisionShape2D" parent="level/m0/entities/4/monitor"]
+position = Vector2( 8, -105.938 )
+shape = SubResource( 2 )
+
+[node name="5" type="RigidBody2D" parent="level/m0/entities"]
+position = Vector2( 846, 619 )
+rotation = -1.38345
+collision_layer = 7
+collision_mask = 4
+mode = 1
+contact_monitor = true
+script = ExtResource( 32 )
+
+[node name="hitbox" type="CollisionShape2D" parent="level/m0/entities/5"]
+position = Vector2( -1, 17 )
+shape = SubResource( 4 )
+disabled = true
+
+[node name="AnimatedSprite" type="AnimatedSprite" parent="level/m0/entities/5"]
+modulate = Color( 0.678431, 0.678431, 0.678431, 1 )
+position = Vector2( 8, -72 )
+scale = Vector2( 0.622584, 0.642371 )
+frames = SubResource( 3 )
+frame = 2
+playing = true
+
+[node name="monitor" type="Area2D" parent="level/m0/entities/5"]
+
+[node name="monitor_shape" type="CollisionShape2D" parent="level/m0/entities/5/monitor"]
+position = Vector2( 8, -105.938 )
+shape = SubResource( 2 )
+
+[node name="6" type="RigidBody2D" parent="level/m0/entities"]
+position = Vector2( 1146, 590 )
+rotation = -1.38345
+collision_layer = 7
+collision_mask = 4
+mode = 1
+contact_monitor = true
+script = ExtResource( 32 )
+
+[node name="hitbox" type="CollisionShape2D" parent="level/m0/entities/6"]
+position = Vector2( -1, 17 )
+shape = SubResource( 4 )
+disabled = true
+
+[node name="AnimatedSprite" type="AnimatedSprite" parent="level/m0/entities/6"]
+modulate = Color( 0.678431, 0.678431, 0.678431, 1 )
+position = Vector2( 8, -72 )
+scale = Vector2( 0.622584, 0.642371 )
+frames = SubResource( 3 )
+frame = 1
+playing = true
+
+[node name="monitor" type="Area2D" parent="level/m0/entities/6"]
+
+[node name="monitor_shape" type="CollisionShape2D" parent="level/m0/entities/6/monitor"]
+position = Vector2( 8, -105.938 )
+shape = SubResource( 2 )
+
+[node name="7" type="RigidBody2D" parent="level/m0/entities"]
+position = Vector2( 1452, 535 )
+rotation = -1.38345
+collision_layer = 7
+collision_mask = 4
+mode = 1
+contact_monitor = true
+script = ExtResource( 32 )
+
+[node name="hitbox" type="CollisionShape2D" parent="level/m0/entities/7"]
+position = Vector2( -1, 17 )
+shape = SubResource( 4 )
+disabled = true
+
+[node name="AnimatedSprite" type="AnimatedSprite" parent="level/m0/entities/7"]
+modulate = Color( 0.678431, 0.678431, 0.678431, 1 )
+position = Vector2( 8, -72 )
+scale = Vector2( 0.622584, 0.642371 )
+frames = SubResource( 3 )
+frame = 2
+playing = true
+
+[node name="monitor" type="Area2D" parent="level/m0/entities/7"]
+
+[node name="monitor_shape" type="CollisionShape2D" parent="level/m0/entities/7/monitor"]
+position = Vector2( 8, -105.938 )
+shape = SubResource( 2 )
+
+[node name="8" type="RigidBody2D" parent="level/m0/entities"]
+position = Vector2( 1352, 394 )
+rotation = -2.88239
+collision_layer = 7
+collision_mask = 4
+mode = 1
+contact_monitor = true
+script = ExtResource( 32 )
+
+[node name="hitbox" type="CollisionShape2D" parent="level/m0/entities/8"]
+position = Vector2( -1, 17 )
+shape = SubResource( 4 )
+disabled = true
+
+[node name="AnimatedSprite" type="AnimatedSprite" parent="level/m0/entities/8"]
+modulate = Color( 0.678431, 0.678431, 0.678431, 1 )
+position = Vector2( 8, -72 )
+scale = Vector2( 0.622584, 0.642371 )
+frames = SubResource( 3 )
+playing = true
+
+[node name="monitor" type="Area2D" parent="level/m0/entities/8"]
+
+[node name="monitor_shape" type="CollisionShape2D" parent="level/m0/entities/8/monitor"]
+position = Vector2( 8, -105.938 )
+shape = SubResource( 2 )
+
+[node name="worm" type="RigidBody2D" parent="level/m0/entities"]
+position = Vector2( 1966, -143 )
+z_index = 2
+collision_layer = 2
+collision_mask = 0
+mode = 1
+
+[node name="collition" type="CollisionShape2D" parent="level/m0/entities/worm"]
+position = Vector2( -4, 0 )
+shape = SubResource( 5 )
+
+[node name="body1" type="RigidBody2D" parent="level/m0/entities/worm"]
+position = Vector2( 0, 64 )
+collision_layer = 2
+collision_mask = 0
+mode = 1
+
+[node name="collition" type="CollisionShape2D" parent="level/m0/entities/worm/body1"]
+position = Vector2( -1, 71 )
+shape = SubResource( 6 )
+
+[node name="body2" type="RigidBody2D" parent="level/m0/entities/worm/body1"]
+position = Vector2( 0, 176 )
+collision_layer = 2
+collision_mask = 0
+mode = 1
+
+[node name="collition" type="CollisionShape2D" parent="level/m0/entities/worm/body1/body2"]
+position = Vector2( -1, 71 )
+shape = SubResource( 6 )
+
+[node name="body3" type="RigidBody2D" parent="level/m0/entities/worm/body1/body2"]
+position = Vector2( 0, 184 )
+collision_layer = 2
+collision_mask = 0
+mode = 1
+
+[node name="collition" type="CollisionShape2D" parent="level/m0/entities/worm/body1/body2/body3"]
+position = Vector2( -1, 71 )
+shape = SubResource( 6 )
+
+[node name="body4" type="RigidBody2D" parent="level/m0/entities/worm/body1/body2/body3"]
+position = Vector2( 0, 168 )
+collision_layer = 2
+collision_mask = 0
+mode = 1
+
+[node name="collition" type="CollisionShape2D" parent="level/m0/entities/worm/body1/body2/body3/body4"]
+position = Vector2( -1, 71 )
+shape = SubResource( 6 )
+
+[node name="body5" type="RigidBody2D" parent="level/m0/entities/worm/body1/body2/body3/body4"]
+position = Vector2( 0, 168 )
+collision_layer = 2
+collision_mask = 0
+mode = 1
+
+[node name="collition" type="CollisionShape2D" parent="level/m0/entities/worm/body1/body2/body3/body4/body5"]
+position = Vector2( -1, 71 )
+shape = SubResource( 6 )
+
+[node name="sprite" type="AnimatedSprite" parent="level/m0/entities/worm/body1/body2/body3/body4/body5"]
+position = Vector2( -1.5, 72 )
+scale = Vector2( 2, 2 )
+frames = SubResource( 7 )
+playing = true
+
+[node name="shadow" type="Sprite" parent="level/m0/entities/worm/body1/body2/body3/body4/body5/sprite"]
+modulate = Color( 0.0546875, 0.0493469, 0.0493469, 0.223529 )
+position = Vector2( 13.988, 15 )
+z_index = -1
+texture = ExtResource( 20 )
+
+[node name="5-6" type="PinJoint2D" parent="level/m0/entities/worm/body1/body2/body3/body4/body5"]
+position = Vector2( 0, 168 )
+node_a = NodePath("..")
+softness = 2.0
+
+[node name="sprite" type="AnimatedSprite" parent="level/m0/entities/worm/body1/body2/body3/body4"]
+position = Vector2( -1.5, 72 )
+scale = Vector2( 2, 2 )
+frames = SubResource( 7 )
+playing = true
+
+[node name="shadow" type="Sprite" parent="level/m0/entities/worm/body1/body2/body3/body4/sprite"]
+modulate = Color( 0.0546875, 0.0493469, 0.0493469, 0.223529 )
+position = Vector2( 13.988, 15 )
+z_index = -1
+texture = ExtResource( 20 )
+
+[node name="4-5" type="PinJoint2D" parent="level/m0/entities/worm/body1/body2/body3/body4"]
+position = Vector2( 0, 168 )
+node_a = NodePath("..")
+node_b = NodePath("../body5")
+
+[node name="sprite" type="AnimatedSprite" parent="level/m0/entities/worm/body1/body2/body3"]
+position = Vector2( -1.5, 72 )
+scale = Vector2( 2, 2 )
+frames = SubResource( 7 )
+playing = true
+
+[node name="shadow" type="Sprite" parent="level/m0/entities/worm/body1/body2/body3/sprite"]
+modulate = Color( 0.0546875, 0.0493469, 0.0493469, 0.223529 )
+position = Vector2( 13.988, 15 )
+z_index = -1
+texture = ExtResource( 20 )
+
+[node name="3-4" type="PinJoint2D" parent="level/m0/entities/worm/body1/body2/body3"]
+position = Vector2( 0, 168 )
+node_a = NodePath("..")
+node_b = NodePath("../body4")
+softness = 4.0
+
+[node name="sprite" type="AnimatedSprite" parent="level/m0/entities/worm/body1/body2"]
+position = Vector2( -1.5, 72 )
+scale = Vector2( 2, 2 )
+frames = SubResource( 7 )
+playing = true
+
+[node name="shadow" type="Sprite" parent="level/m0/entities/worm/body1/body2/sprite"]
+modulate = Color( 0.0546875, 0.0493469, 0.0493469, 0.223529 )
+position = Vector2( 13.988, 15 )
+z_index = -1
+texture = ExtResource( 20 )
+
+[node name="2-3" type="PinJoint2D" parent="level/m0/entities/worm/body1/body2"]
+position = Vector2( 0, 168 )
+node_a = NodePath("..")
+node_b = NodePath("../body3")
+softness = 3.0
+
+[node name="sprite" type="AnimatedSprite" parent="level/m0/entities/worm/body1"]
+position = Vector2( -1.5, 72 )
+scale = Vector2( 2, 2 )
+frames = SubResource( 7 )
+frame = 2
+playing = true
+
+[node name="shadow" type="Sprite" parent="level/m0/entities/worm/body1/sprite"]
+modulate = Color( 0, 0, 0, 0.223529 )
+position = Vector2( 16.25, 20 )
+z_index = -1
+texture = ExtResource( 20 )
+
+[node name="1-2" type="PinJoint2D" parent="level/m0/entities/worm/body1"]
+position = Vector2( 0, 168 )
+node_a = NodePath("..")
+node_b = NodePath("../body2")
+softness = 2.0
+
+[node name="sprite" type="AnimatedSprite" parent="level/m0/entities/worm"]
+scale = Vector2( 2, 2 )
+frames = SubResource( 8 )
+playing = true
+
+[node name="shadow" type="Sprite" parent="level/m0/entities/worm/sprite"]
+modulate = Color( 0.03125, 0.03125, 0.03125, 0.223529 )
+position = Vector2( 16.5, 9 )
+z_index = -1
+texture = ExtResource( 15 )
+
+[node name="0-1" type="PinJoint2D" parent="level/m0/entities/worm"]
+position = Vector2( 0, 64 )
+node_a = NodePath("..")
+node_b = NodePath("../body1")
+bias = 0.9
+
+[node name="cry3" type="AudioStreamPlayer2D" parent="level/m0/entities/worm"]
+stream = ExtResource( 9 )
+autoplay = true
+
+[node name="door_closing_sound" type="AudioStreamPlayer" parent="level/m0"]
+stream = ExtResource( 19 )
+
+[node name="hud" type="CanvasLayer" parent="."]
+
+[node name="Sprite" type="Sprite" parent="hud"]
+visible = false
+modulate = Color( 1, 1, 1, 0.0588235 )
+position = Vector2( 642, 360 )
+scale = Vector2( 1.03555, 1.02083 )
+texture = ExtResource( 17 )
+
+[node name="watta" type="Sprite" parent="hud"]
+modulate = Color( 1, 1, 1, 0.286275 )
+material = SubResource( 20 )
+position = Vector2( 651.5, 379.5 )
+scale = Vector2( 1.32129, 1.0638 )
+texture = ExtResource( 1 )
+
+[node name="fade_out" type="Timer" parent="hud"]
+
+[node name="worm_attack" type="Timer" parent="hud"]
+process_mode = 0
+
+[node name="fps" type="Label" parent="hud"]
+margin_right = 72.0
+margin_bottom = 48.0
+text = "30"
+
+[node name="under_water_sound" type="AudioStreamPlayer" parent="hud"]
+stream = ExtResource( 14 )
+volume_db = -3.714
+autoplay = true
+
+[node name="viniet" type="Sprite" parent="hud"]
+modulate = Color( 1, 1, 1, 0.262745 )
+material = SubResource( 32 )
+position = Vector2( 628, 356 )
+scale = Vector2( 1.14375, 1.18889 )
+texture = ExtResource( 1 )
+
+[node name="text2" type="Label" parent="hud"]
+modulate = Color( 1, 1, 1, 0.701961 )
+margin_left = 16.0
+margin_top = 675.0
+margin_right = 2268.0
+margin_bottom = 1080.0
+rect_scale = Vector2( 0.15, 0.15 )
+custom_colors/font_color = Color( 1, 0.866667, 0, 1 )
+custom_colors/font_outline_modulate = Color( 1, 0.960784, 0, 1 )
+custom_colors/font_color_shadow = Color( 1, 1, 1, 1 )
+custom_fonts/font = ExtResource( 27 )
+text = "press \"q\" to retry
+"
+
+[node name="ap" type="AnimationPlayer" parent="hud/text2"]
+autoplay = "idle"
+anims/RESET = SubResource( 29 )
+anims/idle = SubResource( 30 )
+
+[node name="tako" type="RigidBody2D" parent="."]
+position = Vector2( -1162, -108 )
+collision_layer = 5
+collision_mask = 2
+contacts_reported = 3
+script = ExtResource( 13 )
+
+[node name="fade_of" type="Timer" parent="tako"]
+wait_time = 0.5
+one_shot = true
+
+[node name="Sprite" type="Sprite" parent="tako"]
+modulate = Color( 0.505882, 0.505882, 0.505882, 1 )
+position = Vector2( 0, 1 )
+rotation = 1.5708
+scale = Vector2( 1, 0.8 )
+texture = ExtResource( 4 )
+hframes = 6
+region_enabled = true
+region_rect = Rect2( 563, 21, 297, 91 )
+
+[node name="shadow" type="Sprite" parent="tako/Sprite"]
+modulate = Color( 0, 0, 0, 0.2 )
+position = Vector2( 2.00006, 20 )
+z_index = -1
+texture = ExtResource( 4 )
+region_enabled = true
+region_rect = Rect2( 644, 38, 45, 73 )
+
+[node name="hitbox" type="CollisionShape2D" parent="tako"]
+visible = false
+position = Vector2( 0, -4 )
+rotation = 1.5708
+scale = Vector2( 1, 0.8 )
+shape = SubResource( 21 )
+
+[node name="monitor" type="Area2D" parent="tako"]
+
+[node name="monitor_shape" type="CollisionShape2D" parent="tako/monitor"]
+visible = false
+shape = SubResource( 33 )
+
+[node name="cursor" type="Sprite" parent="tako"]
+visible = false
+texture = ExtResource( 3 )
+
+[node name="Area2D" type="Area2D" parent="tako"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="tako/Area2D"]
+visible = false
+modulate = Color( 1, 0, 0.984314, 1 )
+self_modulate = Color( 1, 0, 0.937255, 1 )
+shape = SubResource( 34 )
+
+[node name="ap" type="AnimationPlayer" parent="tako"]
+root_node = NodePath("../Sprite")
+autoplay = "idle"
+reset_on_save = false
+anims/RESET = SubResource( 14 )
+"anims/charging shot" = SubResource( 15 )
+anims/idle = SubResource( 16 )
+anims/shot = SubResource( 17 )
+
+[node name="impulse" type="AudioStreamPlayer2D" parent="tako"]
+stream = ExtResource( 8 )
+volume_db = -1.914
+
+[node name="release_gas" type="AudioStreamPlayer" parent="tako"]
+stream = ExtResource( 6 )
+volume_db = -8.265
+
+[node name="charge" type="AudioStreamPlayer" parent="tako"]
+stream = ExtResource( 2 )
+volume_db = -17.219
+autoplay = true
+stream_paused = true
+
+[node name="back_part" type="Particles2D" parent="tako"]
+visible = false
+position = Vector2( -40, -2 )
+scale = Vector2( 0.15, 0.15 )
+amount = 7
+lifetime = 5.0
+speed_scale = 4.0
+randomness = 0.02
+process_material = SubResource( 13 )
+texture = ExtResource( 7 )
+
+[node name="ui" type="Node2D" parent="tako"]
+visible = false
+
+[node name="Label" type="Label" parent="tako/ui"]
+margin_left = -24.0
+margin_top = -80.0
+margin_right = 16.0
+margin_bottom = -66.0
+text = "impulse"
+
+[node name="ProgressBar" type="ProgressBar" parent="tako/ui"]
+margin_left = -32.0
+margin_top = -64.0
+margin_right = 32.0
+margin_bottom = -50.0
+custom_colors/font_color = Color( 1, 1, 1, 1 )
+custom_colors/font_color_shadow = Color( 0.360784, 1, 0, 1 )
+step = 0.75
+value = 0.75
+allow_greater = true
+percent_visible = false
+
+[node name="hit" type="AudioStreamPlayer" parent="tako"]
+stream = ExtResource( 5 )
+volume_db = -10.331
+pitch_scale = 1.18
+
+[connection signal="body_entered" from="level/m0/entities/flag/activation_area" to="level/m0/entities/flag" method="_on_activation_area_body_entered"]
+[connection signal="timeout" from="level/m0/entities/flag/die" to="level/m0/entities/flag" method="_on_die_timeout"]
+[connection signal="body_shape_entered" from="level/m0/entities/1/monitor" to="level/m0/entities/1" method="_on_monitor_body_shape_entered"]
+[connection signal="body_shape_entered" from="level/m0/entities/2/monitor" to="level/m0/entities/2" method="_on_monitor_body_shape_entered"]
+[connection signal="body_shape_entered" from="level/m0/entities/3/monitor" to="level/m0/entities/3" method="_on_monitor_body_shape_entered"]
+[connection signal="body_shape_entered" from="level/m0/entities/4/monitor" to="level/m0/entities/4" method="_on_monitor_body_shape_entered"]
+[connection signal="body_shape_entered" from="level/m0/entities/5/monitor" to="level/m0/entities/5" method="_on_monitor_body_shape_entered"]
+[connection signal="body_shape_entered" from="level/m0/entities/6/monitor" to="level/m0/entities/6" method="_on_monitor_body_shape_entered"]
+[connection signal="body_shape_entered" from="level/m0/entities/7/monitor" to="level/m0/entities/7" method="_on_monitor_body_shape_entered"]
+[connection signal="body_shape_entered" from="level/m0/entities/8/monitor" to="level/m0/entities/8" method="_on_monitor_body_shape_entered"]
+[connection signal="timeout" from="hud/fade_out" to="hud" method="_on_fade_out_timeout"]
+[connection signal="timeout" from="tako/fade_of" to="tako" method="_on_fade_of_timeout"]
+[connection signal="input_event" from="tako/monitor" to="tako" method="_on_monitor_input_event"]
+[connection signal="body_entered" from="tako/Area2D" to="tako" method="_on_Area2D_body_entered"]

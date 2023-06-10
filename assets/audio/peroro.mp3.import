@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/peroro.mp3-583186f80f2a177fb6f3692007980c5a.mp3str"
+
+[deps]
+
+source_file="res://assets/audio/peroro.mp3"
+dest_files=[ "res://.import/peroro.mp3-583186f80f2a177fb6f3692007980c5a.mp3str" ]
+
+[params]
+
+loop=false
+loop_offset=0

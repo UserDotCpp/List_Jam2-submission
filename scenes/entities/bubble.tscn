@@ -1,0 +1,91 @@
+[gd_scene load_steps=9 format=2]
+
+[ext_resource path="res://assets/sprites/oxygen/6.png" type="Texture" id=1]
+[ext_resource path="res://scripts/bubble.gd" type="Script" id=2]
+[ext_resource path="res://assets/sprites/oxygen/5.png" type="Texture" id=3]
+[ext_resource path="res://assets/sprites/oxygen/4.png" type="Texture" id=4]
+
+[sub_resource type="CircleShape2D" id=1]
+radius = 56.0
+
+[sub_resource type="SpriteFrames" id=2]
+animations = [ {
+"frames": [ ExtResource( 4 ), ExtResource( 3 ), ExtResource( 1 ) ],
+"loop": true,
+"name": "default",
+"speed": 5.0
+} ]
+
+[sub_resource type="Animation" id=3]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:offset")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Vector2( 0, 0 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("..:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Vector2( 1, 5 ) ]
+}
+
+[sub_resource type="Animation" id=4]
+resource_name = "idle"
+loop = true
+step = 0.0416667
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:offset")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.291667, 0.666667, 1 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"update": 0,
+"values": [ Vector2( 0, 0 ), Vector2( 3, 8 ), Vector2( 8, -16 ), Vector2( 0, 0 ) ]
+}
+
+[node name="bubble" type="Area2D"]
+position = Vector2( 1, 5 )
+script = ExtResource( 2 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource( 1 )
+
+[node name="AnimatedSprite" type="AnimatedSprite" parent="."]
+modulate = Color( 0.431373, 0.431373, 0.431373, 0.92549 )
+scale = Vector2( 0.688235, 0.713608 )
+frames = SubResource( 2 )
+frame = 2
+speed_scale = 0.25
+playing = true
+
+[node name="shadow" type="Sprite" parent="AnimatedSprite"]
+modulate = Color( 0, 0, 0, 0.211765 )
+position = Vector2( 11.6239, 5.60532 )
+scale = Vector2( 0.937045, 0.908418 )
+z_index = -1
+texture = ExtResource( 4 )
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="AnimatedSprite"]
+autoplay = "idle"
+reset_on_save = false
+anims/RESET = SubResource( 3 )
+anims/idle = SubResource( 4 )
+
+[connection signal="body_entered" from="." to="." method="_on_bubble_body_entered"]

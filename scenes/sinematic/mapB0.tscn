@@ -1,0 +1,535 @@
+[gd_scene load_steps=26 format=2]
+
+[ext_resource path="res://assets/audio/close_door.mp3" type="AudioStream" id=1]
+[ext_resource path="res://assets/map_assets/mapB1/back2.png" type="Texture" id=2]
+[ext_resource path="res://assets/map_assets/mapB1/front2.png" type="Texture" id=3]
+[ext_resource path="res://assets/sprites/black_box.png" type="Texture" id=4]
+[ext_resource path="res://scenes/entities/door.tscn" type="PackedScene" id=5]
+[ext_resource path="res://scripts/sinematic/sinematicFlag.gd" type="Script" id=6]
+[ext_resource path="res://assets/audio/worm3.mp3" type="AudioStream" id=7]
+[ext_resource path="res://assets/sprites/enemy/2.png" type="Texture" id=8]
+[ext_resource path="res://assets/sprites/enemy/3.png" type="Texture" id=9]
+[ext_resource path="res://assets/sprites/enemy/1.png" type="Texture" id=10]
+[ext_resource path="res://scripts/enemy.gd" type="Script" id=11]
+[ext_resource path="res://assets/sprites/worm/body/1.png" type="Texture" id=12]
+[ext_resource path="res://assets/sprites/worm/body/2.png" type="Texture" id=13]
+[ext_resource path="res://assets/sprites/worm/head/3.png" type="Texture" id=14]
+[ext_resource path="res://assets/sprites/worm/head/1.png" type="Texture" id=15]
+[ext_resource path="res://assets/sprites/worm/head/2.png" type="Texture" id=16]
+[ext_resource path="res://assets/sprites/worm/body/3.png" type="Texture" id=17]
+
+[sub_resource type="RectangleShape2D" id=1]
+
+[sub_resource type="RectangleShape2D" id=4]
+extents = Vector2( 35, 25 )
+
+[sub_resource type="SpriteFrames" id=3]
+animations = [ {
+"frames": [ ExtResource( 10 ), ExtResource( 8 ), ExtResource( 9 ) ],
+"loop": true,
+"name": "default",
+"speed": 5.0
+} ]
+
+[sub_resource type="RectangleShape2D" id=2]
+extents = Vector2( 168, 102.063 )
+
+[sub_resource type="RectangleShape2D" id=5]
+extents = Vector2( 72, 80 )
+
+[sub_resource type="RectangleShape2D" id=6]
+extents = Vector2( 66, 114 )
+
+[sub_resource type="SpriteFrames" id=7]
+animations = [ {
+"frames": [ ExtResource( 12 ), ExtResource( 13 ), ExtResource( 17 ) ],
+"loop": true,
+"name": "default",
+"speed": 5.0
+} ]
+
+[sub_resource type="SpriteFrames" id=8]
+animations = [ {
+"frames": [ ExtResource( 15 ), ExtResource( 16 ), ExtResource( 14 ) ],
+"loop": true,
+"name": "default",
+"speed": 5.0
+} ]
+
+[node name="mapB" type="Node2D"]
+position = Vector2( 448, -396 )
+
+[node name="stage" type="StaticBody2D" parent="."]
+
+[node name="back" type="Sprite" parent="stage"]
+position = Vector2( 894.5, 424 )
+texture = ExtResource( 2 )
+
+[node name="front" type="Sprite" parent="stage"]
+position = Vector2( 894.5, 424 )
+texture = ExtResource( 3 )
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="stage"]
+polygon = PoolVector2Array( -478, 244, 222, 232, 264, 269, 288, 368, 575, 413, 829, 423, 978, 395, 989, 408, 1032, 402, 1110, 449, 1037, 352, 1020, 208, 1089, 139, 1456, 95, 2063, 94, 2202, 274, 2283, 278, 2285, -46, -722, -14, -728, 946, 2313, 934, 2304, 393, 2204, 404, 2144, 633, 1789, 644, 1561, 573, 1554, 368, 1146, 353, 1161, 398, 1440, 405, 1441, 527, 1368, 567, 1248, 537, 918, 552, 897, 584, 704, 576, 604, 611, 390, 593, 373, 675, 289, 734, -475, 713 )
+
+[node name="CollisionPolygon2D2" type="CollisionPolygon2D" parent="stage"]
+polygon = PoolVector2Array( 99, 320, 175, 315, 212, 674, 148, 684 )
+
+[node name="entities" type="Node2D" parent="."]
+
+[node name="flag" type="Node2D" parent="entities"]
+position = Vector2( 1160, 432 )
+script = ExtResource( 6 )
+
+[node name="activation_area" type="Area2D" parent="entities/flag"]
+
+[node name="collision_shape" type="CollisionShape2D" parent="entities/flag/activation_area"]
+position = Vector2( 1090, -115 )
+scale = Vector2( 5, 10 )
+shape = SubResource( 1 )
+
+[node name="blocage_position" type="Position2D" parent="entities/flag"]
+position = Vector2( -1605, 219 )
+
+[node name="next_scene_position" type="Position2D" parent="entities/flag"]
+position = Vector2( 1141, -60 )
+
+[node name="up2" type="Sprite" parent="entities/flag"]
+visible = false
+position = Vector2( -537, -725 )
+scale = Vector2( 1.19461, 0.702083 )
+z_index = 3
+texture = ExtResource( 4 )
+
+[node name="down2" type="Sprite" parent="entities/flag"]
+visible = false
+position = Vector2( -540, 594 )
+scale = Vector2( 1.16819, 0.667361 )
+z_index = 3
+texture = ExtResource( 4 )
+
+[node name="worm_place" type="Node2D" parent="entities/flag"]
+
+[node name="die" type="Timer" parent="entities/flag"]
+wait_time = 0.136
+
+[node name="spawn_delay" type="Timer" parent="entities/flag"]
+wait_time = 0.5
+
+[node name="direction_line" type="Line2D" parent="entities/flag"]
+points = PoolVector2Array( 0, 0, 0, 0 )
+default_color = Color( 0.188235, 0.203922, 0.27451, 0.392157 )
+
+[node name="door" parent="entities" instance=ExtResource( 5 )]
+position = Vector2( 1912, 335 )
+
+[node name="1" type="RigidBody2D" parent="entities"]
+position = Vector2( 621, 647 )
+rotation = -1.38345
+collision_layer = 7
+collision_mask = 4
+mode = 1
+contact_monitor = true
+script = ExtResource( 11 )
+
+[node name="hitbox" type="CollisionShape2D" parent="entities/1"]
+position = Vector2( -1, 17 )
+shape = SubResource( 4 )
+disabled = true
+
+[node name="AnimatedSprite" type="AnimatedSprite" parent="entities/1"]
+modulate = Color( 0.678431, 0.678431, 0.678431, 1 )
+position = Vector2( 8, -72 )
+scale = Vector2( 0.622584, 0.642371 )
+frames = SubResource( 3 )
+playing = true
+
+[node name="monitor" type="Area2D" parent="entities/1"]
+
+[node name="monitor_shape" type="CollisionShape2D" parent="entities/1/monitor"]
+position = Vector2( 8, -105.938 )
+shape = SubResource( 2 )
+
+[node name="2" type="RigidBody2D" parent="entities"]
+position = Vector2( 594, 374 )
+rotation = -2.07452
+collision_layer = 7
+collision_mask = 4
+mode = 1
+contact_monitor = true
+script = ExtResource( 11 )
+
+[node name="hitbox" type="CollisionShape2D" parent="entities/2"]
+position = Vector2( -1, 17 )
+shape = SubResource( 4 )
+disabled = true
+
+[node name="AnimatedSprite" type="AnimatedSprite" parent="entities/2"]
+modulate = Color( 0.678431, 0.678431, 0.678431, 1 )
+position = Vector2( 8, -72 )
+scale = Vector2( 0.622584, 0.642371 )
+frames = SubResource( 3 )
+playing = true
+
+[node name="monitor" type="Area2D" parent="entities/2"]
+
+[node name="monitor_shape" type="CollisionShape2D" parent="entities/2/monitor"]
+position = Vector2( 8, -105.938 )
+shape = SubResource( 2 )
+
+[node name="3" type="RigidBody2D" parent="entities"]
+position = Vector2( 805, 380 )
+rotation = -2.07452
+collision_layer = 7
+collision_mask = 4
+mode = 1
+contact_monitor = true
+script = ExtResource( 11 )
+
+[node name="hitbox" type="CollisionShape2D" parent="entities/3"]
+position = Vector2( -1, 17 )
+shape = SubResource( 4 )
+disabled = true
+
+[node name="AnimatedSprite" type="AnimatedSprite" parent="entities/3"]
+modulate = Color( 0.678431, 0.678431, 0.678431, 1 )
+position = Vector2( 8, -72 )
+scale = Vector2( 0.622584, 0.642371 )
+frames = SubResource( 3 )
+frame = 2
+playing = true
+
+[node name="monitor" type="Area2D" parent="entities/3"]
+
+[node name="monitor_shape" type="CollisionShape2D" parent="entities/3/monitor"]
+position = Vector2( 8, -105.938 )
+shape = SubResource( 2 )
+
+[node name="4" type="RigidBody2D" parent="entities"]
+position = Vector2( 999, 365 )
+rotation = -2.07452
+collision_layer = 7
+collision_mask = 4
+mode = 1
+contact_monitor = true
+script = ExtResource( 11 )
+
+[node name="hitbox" type="CollisionShape2D" parent="entities/4"]
+position = Vector2( -1, 17 )
+shape = SubResource( 4 )
+disabled = true
+
+[node name="AnimatedSprite" type="AnimatedSprite" parent="entities/4"]
+modulate = Color( 0.678431, 0.678431, 0.678431, 1 )
+position = Vector2( 8, -72 )
+scale = Vector2( 0.622584, 0.642371 )
+frames = SubResource( 3 )
+frame = 2
+playing = true
+
+[node name="monitor" type="Area2D" parent="entities/4"]
+
+[node name="monitor_shape" type="CollisionShape2D" parent="entities/4/monitor"]
+position = Vector2( 8, -105.938 )
+shape = SubResource( 2 )
+
+[node name="5" type="RigidBody2D" parent="entities"]
+position = Vector2( 846, 619 )
+rotation = -1.38345
+collision_layer = 7
+collision_mask = 4
+mode = 1
+contact_monitor = true
+script = ExtResource( 11 )
+
+[node name="hitbox" type="CollisionShape2D" parent="entities/5"]
+position = Vector2( -1, 17 )
+shape = SubResource( 4 )
+disabled = true
+
+[node name="AnimatedSprite" type="AnimatedSprite" parent="entities/5"]
+modulate = Color( 0.678431, 0.678431, 0.678431, 1 )
+position = Vector2( 8, -72 )
+scale = Vector2( 0.622584, 0.642371 )
+frames = SubResource( 3 )
+frame = 1
+playing = true
+
+[node name="monitor" type="Area2D" parent="entities/5"]
+
+[node name="monitor_shape" type="CollisionShape2D" parent="entities/5/monitor"]
+position = Vector2( 8, -105.938 )
+shape = SubResource( 2 )
+
+[node name="6" type="RigidBody2D" parent="entities"]
+position = Vector2( 1146, 590 )
+rotation = -1.38345
+collision_layer = 7
+collision_mask = 4
+mode = 1
+contact_monitor = true
+script = ExtResource( 11 )
+
+[node name="hitbox" type="CollisionShape2D" parent="entities/6"]
+position = Vector2( -1, 17 )
+shape = SubResource( 4 )
+disabled = true
+
+[node name="AnimatedSprite" type="AnimatedSprite" parent="entities/6"]
+modulate = Color( 0.678431, 0.678431, 0.678431, 1 )
+position = Vector2( 8, -72 )
+scale = Vector2( 0.622584, 0.642371 )
+frames = SubResource( 3 )
+playing = true
+
+[node name="monitor" type="Area2D" parent="entities/6"]
+
+[node name="monitor_shape" type="CollisionShape2D" parent="entities/6/monitor"]
+position = Vector2( 8, -105.938 )
+shape = SubResource( 2 )
+
+[node name="7" type="RigidBody2D" parent="entities"]
+position = Vector2( 1452, 535 )
+rotation = -1.38345
+collision_layer = 7
+collision_mask = 4
+mode = 1
+contact_monitor = true
+script = ExtResource( 11 )
+
+[node name="hitbox" type="CollisionShape2D" parent="entities/7"]
+position = Vector2( -1, 17 )
+shape = SubResource( 4 )
+disabled = true
+
+[node name="AnimatedSprite" type="AnimatedSprite" parent="entities/7"]
+modulate = Color( 0.678431, 0.678431, 0.678431, 1 )
+position = Vector2( 8, -72 )
+scale = Vector2( 0.622584, 0.642371 )
+frames = SubResource( 3 )
+frame = 1
+playing = true
+
+[node name="monitor" type="Area2D" parent="entities/7"]
+
+[node name="monitor_shape" type="CollisionShape2D" parent="entities/7/monitor"]
+position = Vector2( 8, -105.938 )
+shape = SubResource( 2 )
+
+[node name="8" type="RigidBody2D" parent="entities"]
+position = Vector2( 1352, 394 )
+rotation = -2.88239
+collision_layer = 7
+collision_mask = 4
+mode = 1
+contact_monitor = true
+script = ExtResource( 11 )
+
+[node name="hitbox" type="CollisionShape2D" parent="entities/8"]
+position = Vector2( -1, 17 )
+shape = SubResource( 4 )
+disabled = true
+
+[node name="AnimatedSprite" type="AnimatedSprite" parent="entities/8"]
+modulate = Color( 0.678431, 0.678431, 0.678431, 1 )
+position = Vector2( 8, -72 )
+scale = Vector2( 0.622584, 0.642371 )
+frames = SubResource( 3 )
+frame = 2
+playing = true
+
+[node name="monitor" type="Area2D" parent="entities/8"]
+
+[node name="monitor_shape" type="CollisionShape2D" parent="entities/8/monitor"]
+position = Vector2( 8, -105.938 )
+shape = SubResource( 2 )
+
+[node name="worm" type="RigidBody2D" parent="entities"]
+position = Vector2( 1966, -143 )
+z_index = 2
+collision_layer = 2
+collision_mask = 0
+mode = 1
+
+[node name="collition" type="CollisionShape2D" parent="entities/worm"]
+position = Vector2( -4, 0 )
+shape = SubResource( 5 )
+
+[node name="body1" type="RigidBody2D" parent="entities/worm"]
+position = Vector2( 0, 64 )
+collision_layer = 2
+collision_mask = 0
+mode = 1
+
+[node name="collition" type="CollisionShape2D" parent="entities/worm/body1"]
+position = Vector2( -1, 71 )
+shape = SubResource( 6 )
+
+[node name="body2" type="RigidBody2D" parent="entities/worm/body1"]
+position = Vector2( 0, 176 )
+collision_layer = 2
+collision_mask = 0
+mode = 1
+
+[node name="collition" type="CollisionShape2D" parent="entities/worm/body1/body2"]
+position = Vector2( -1, 71 )
+shape = SubResource( 6 )
+
+[node name="body3" type="RigidBody2D" parent="entities/worm/body1/body2"]
+position = Vector2( 0, 184 )
+collision_layer = 2
+collision_mask = 0
+mode = 1
+
+[node name="collition" type="CollisionShape2D" parent="entities/worm/body1/body2/body3"]
+position = Vector2( -1, 71 )
+shape = SubResource( 6 )
+
+[node name="body4" type="RigidBody2D" parent="entities/worm/body1/body2/body3"]
+position = Vector2( 0, 168 )
+collision_layer = 2
+collision_mask = 0
+mode = 1
+
+[node name="collition" type="CollisionShape2D" parent="entities/worm/body1/body2/body3/body4"]
+position = Vector2( -1, 71 )
+shape = SubResource( 6 )
+
+[node name="body5" type="RigidBody2D" parent="entities/worm/body1/body2/body3/body4"]
+position = Vector2( 0, 168 )
+collision_layer = 2
+collision_mask = 0
+mode = 1
+
+[node name="collition" type="CollisionShape2D" parent="entities/worm/body1/body2/body3/body4/body5"]
+position = Vector2( -1, 71 )
+shape = SubResource( 6 )
+
+[node name="sprite" type="AnimatedSprite" parent="entities/worm/body1/body2/body3/body4/body5"]
+position = Vector2( -1.5, 72 )
+scale = Vector2( 2, 2 )
+frames = SubResource( 7 )
+frame = 2
+playing = true
+
+[node name="shadow" type="Sprite" parent="entities/worm/body1/body2/body3/body4/body5/sprite"]
+modulate = Color( 0.0546875, 0.0493469, 0.0493469, 0.223529 )
+position = Vector2( 13.988, 15 )
+z_index = -1
+texture = ExtResource( 12 )
+
+[node name="5-6" type="PinJoint2D" parent="entities/worm/body1/body2/body3/body4/body5"]
+position = Vector2( 0, 168 )
+node_a = NodePath("..")
+softness = 2.0
+
+[node name="sprite" type="AnimatedSprite" parent="entities/worm/body1/body2/body3/body4"]
+position = Vector2( -1.5, 72 )
+scale = Vector2( 2, 2 )
+frames = SubResource( 7 )
+frame = 2
+playing = true
+
+[node name="shadow" type="Sprite" parent="entities/worm/body1/body2/body3/body4/sprite"]
+modulate = Color( 0.0546875, 0.0493469, 0.0493469, 0.223529 )
+position = Vector2( 13.988, 15 )
+z_index = -1
+texture = ExtResource( 12 )
+
+[node name="4-5" type="PinJoint2D" parent="entities/worm/body1/body2/body3/body4"]
+position = Vector2( 0, 168 )
+node_a = NodePath("..")
+node_b = NodePath("../body5")
+
+[node name="sprite" type="AnimatedSprite" parent="entities/worm/body1/body2/body3"]
+position = Vector2( -1.5, 72 )
+scale = Vector2( 2, 2 )
+frames = SubResource( 7 )
+frame = 2
+playing = true
+
+[node name="shadow" type="Sprite" parent="entities/worm/body1/body2/body3/sprite"]
+modulate = Color( 0.0546875, 0.0493469, 0.0493469, 0.223529 )
+position = Vector2( 13.988, 15 )
+z_index = -1
+texture = ExtResource( 12 )
+
+[node name="3-4" type="PinJoint2D" parent="entities/worm/body1/body2/body3"]
+position = Vector2( 0, 168 )
+node_a = NodePath("..")
+node_b = NodePath("../body4")
+softness = 4.0
+
+[node name="sprite" type="AnimatedSprite" parent="entities/worm/body1/body2"]
+position = Vector2( -1.5, 72 )
+scale = Vector2( 2, 2 )
+frames = SubResource( 7 )
+frame = 2
+playing = true
+
+[node name="shadow" type="Sprite" parent="entities/worm/body1/body2/sprite"]
+modulate = Color( 0.0546875, 0.0493469, 0.0493469, 0.223529 )
+position = Vector2( 13.988, 15 )
+z_index = -1
+texture = ExtResource( 12 )
+
+[node name="2-3" type="PinJoint2D" parent="entities/worm/body1/body2"]
+position = Vector2( 0, 168 )
+node_a = NodePath("..")
+node_b = NodePath("../body3")
+softness = 3.0
+
+[node name="sprite" type="AnimatedSprite" parent="entities/worm/body1"]
+position = Vector2( -1.5, 72 )
+scale = Vector2( 2, 2 )
+frames = SubResource( 7 )
+frame = 1
+playing = true
+
+[node name="shadow" type="Sprite" parent="entities/worm/body1/sprite"]
+modulate = Color( 0, 0, 0, 0.223529 )
+position = Vector2( 16.25, 20 )
+z_index = -1
+texture = ExtResource( 12 )
+
+[node name="1-2" type="PinJoint2D" parent="entities/worm/body1"]
+position = Vector2( 0, 168 )
+node_a = NodePath("..")
+node_b = NodePath("../body2")
+softness = 2.0
+
+[node name="sprite" type="AnimatedSprite" parent="entities/worm"]
+scale = Vector2( 2, 2 )
+frames = SubResource( 8 )
+frame = 2
+playing = true
+
+[node name="shadow" type="Sprite" parent="entities/worm/sprite"]
+modulate = Color( 0.03125, 0.03125, 0.03125, 0.223529 )
+position = Vector2( 16.5, 9 )
+z_index = -1
+texture = ExtResource( 15 )
+
+[node name="0-1" type="PinJoint2D" parent="entities/worm"]
+position = Vector2( 0, 64 )
+node_a = NodePath("..")
+node_b = NodePath("../body1")
+bias = 0.9
+
+[node name="cry3" type="AudioStreamPlayer2D" parent="entities/worm"]
+stream = ExtResource( 7 )
+autoplay = true
+
+[node name="door_closing_sound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 1 )
+
+[connection signal="body_entered" from="entities/flag/activation_area" to="entities/flag" method="_on_activation_area_body_entered"]
+[connection signal="timeout" from="entities/flag/die" to="entities/flag" method="_on_die_timeout"]
+[connection signal="body_shape_entered" from="entities/1/monitor" to="entities/1" method="_on_monitor_body_shape_entered"]
+[connection signal="body_shape_entered" from="entities/2/monitor" to="entities/2" method="_on_monitor_body_shape_entered"]
+[connection signal="body_shape_entered" from="entities/3/monitor" to="entities/3" method="_on_monitor_body_shape_entered"]
+[connection signal="body_shape_entered" from="entities/4/monitor" to="entities/4" method="_on_monitor_body_shape_entered"]
+[connection signal="body_shape_entered" from="entities/5/monitor" to="entities/5" method="_on_monitor_body_shape_entered"]
+[connection signal="body_shape_entered" from="entities/6/monitor" to="entities/6" method="_on_monitor_body_shape_entered"]
+[connection signal="body_shape_entered" from="entities/7/monitor" to="entities/7" method="_on_monitor_body_shape_entered"]
+[connection signal="body_shape_entered" from="entities/8/monitor" to="entities/8" method="_on_monitor_body_shape_entered"]

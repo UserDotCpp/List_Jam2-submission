@@ -1,0 +1,99 @@
+[gd_scene load_steps=8 format=2]
+
+[ext_resource path="res://scenes/entities/bubble.tscn" type="PackedScene" id=1]
+[ext_resource path="res://scenes/entities/enemy.tscn" type="PackedScene" id=2]
+[ext_resource path="res://scenes/flag.tscn" type="PackedScene" id=3]
+[ext_resource path="res://assets/map_assets/map1/back.png" type="Texture" id=4]
+[ext_resource path="res://assets/audio/close_door.mp3" type="AudioStream" id=5]
+[ext_resource path="res://scenes/entities/door.tscn" type="PackedScene" id=6]
+[ext_resource path="res://scenes/pipe.tscn" type="PackedScene" id=7]
+
+[node name="Node2D" type="Node2D"]
+
+[node name="stage" type="StaticBody2D" parent="."]
+
+[node name="Sprite" type="Sprite" parent="stage"]
+position = Vector2( 632, 376 )
+scale = Vector2( 1.19375, 1.17778 )
+z_index = -2
+texture = ExtResource( 4 )
+
+[node name="1" type="CollisionPolygon2D" parent="stage"]
+polygon = PoolVector2Array( 96, 624, 64, 208, 416, 152, 920, 136, 1160, 168, 1352, 176, 1360, 312, 1400, 320, 1408, -192, -192, -192, -192, 896, 1416, 952, 1400, 424, 1296, 400, 1272, 424, 1304, 456, 1280, 464, 1344, 480, 1328, 448, 1360, 448, 1368, 592, 1264, 576, 920, 576, 920, 576, 864, 584, 760, 592, 648, 592 )
+
+[node name="2" type="CollisionPolygon2D" parent="stage"]
+polygon = PoolVector2Array( 448, 448, 456, 400, 528, 360, 712, 344, 712, 376, 528, 392 )
+
+[node name="3" type="CollisionPolygon2D" parent="stage"]
+polygon = PoolVector2Array( 824, 328, 1192, 328, 1224, 296, 1248, 304, 1200, 344, 1064, 376, 888, 376, 824, 352 )
+
+[node name="entities" type="Node2D" parent="."]
+
+[node name="enemy2" parent="entities" instance=ExtResource( 2 )]
+position = Vector2( 976, 336 )
+
+[node name="flag" parent="entities" instance=ExtResource( 3 )]
+position = Vector2( 1160, 432 )
+blocage_x = 0
+blocage_y = 0
+spawn_worm = false
+
+[node name="collision_shape" parent="entities/flag/activation_area" index="0"]
+position = Vector2( 275, -62 )
+scale = Vector2( 5, 10 )
+
+[node name="blocage_position" parent="entities/flag" index="1"]
+position = Vector2( -1104, 136 )
+
+[node name="next_scene_position" parent="entities/flag" index="2"]
+position = Vector2( 248, -8 )
+
+[node name="up2" parent="entities/flag" index="3"]
+position = Vector2( -501, -673 )
+scale = Vector2( 1.19461, 0.702083 )
+
+[node name="up" parent="entities/flag" index="4"]
+position = Vector2( -67, -155 )
+points = PoolVector2Array( -1104, -296, 207, -286 )
+default_color = Color( 0.4, 0.501961, 1, 1 )
+
+[node name="down" parent="entities/flag" index="5"]
+position = Vector2( -153, 147 )
+points = PoolVector2Array( -1080, 216, 352, 213 )
+
+[node name="down2" parent="entities/flag" index="6"]
+position = Vector2( -540, 559 )
+scale = Vector2( 1.19441, 0.667361 )
+
+[node name="up" parent="entities/flag/out_of_bounds/out_of_bounds_area" index="0"]
+position = Vector2( -517, -391 )
+scale = Vector2( 40, 6 )
+
+[node name="down" parent="entities/flag/out_of_bounds/out_of_bounds_area" index="1"]
+position = Vector2( -510, 833 )
+scale = Vector2( 40, 6 )
+
+[node name="right" parent="entities/flag/out_of_bounds/out_of_bounds_area" index="2"]
+position = Vector2( 609, 158 )
+scale = Vector2( 6, 30 )
+
+[node name="door" parent="entities" instance=ExtResource( 6 )]
+position = Vector2( 1092, 366 )
+
+[node name="bubble" parent="entities" instance=ExtResource( 1 )]
+position = Vector2( 808, 530 )
+
+[node name="bubble2" parent="entities" instance=ExtResource( 1 )]
+position = Vector2( 1320, 354 )
+
+[node name="enemy3" parent="entities" instance=ExtResource( 2 )]
+position = Vector2( 392, 750 )
+rotation = -1.09383
+
+[node name="pipe" parent="entities" instance=ExtResource( 7 )]
+position = Vector2( 105, 571 )
+
+[node name="door_closing_sound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 5 )
+
+[editable path="entities/flag"]

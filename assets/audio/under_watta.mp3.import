@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/under_watta.mp3-747eb2537457299ecd693a99b8574b74.mp3str"
+
+[deps]
+
+source_file="res://assets/audio/under_watta.mp3"
+dest_files=[ "res://.import/under_watta.mp3-747eb2537457299ecd693a99b8574b74.mp3str" ]
+
+[params]
+
+loop=true
+loop_offset=0
