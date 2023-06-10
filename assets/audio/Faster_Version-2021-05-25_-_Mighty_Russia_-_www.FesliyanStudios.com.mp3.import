@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/Faster_Version-2021-05-25_-_Mighty_Russia_-_www.FesliyanStudios.com.mp3-ae3ba8041d8584589f6dd963f24a63c3.mp3str"
+
+[deps]
+
+source_file="res://assets/audio/Faster_Version-2021-05-25_-_Mighty_Russia_-_www.FesliyanStudios.com.mp3"
+dest_files=[ "res://.import/Faster_Version-2021-05-25_-_Mighty_Russia_-_www.FesliyanStudios.com.mp3-ae3ba8041d8584589f6dd963f24a63c3.mp3str" ]
+
+[params]
+
+loop=true
+loop_offset=0

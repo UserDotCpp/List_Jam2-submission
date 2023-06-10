@@ -31,6 +31,7 @@ animations = [ {
 } ]
 
 [node name="worm" type="RigidBody2D"]
+z_index = 2
 collision_layer = 2
 collision_mask = 0
 
@@ -117,12 +118,24 @@ frames = SubResource( 4 )
 frame = 1
 playing = true
 
+[node name="shadow" type="Sprite" parent="body1/body2/body3/body4/body5/body6/body7/body8/sprite"]
+modulate = Color( 0.0546875, 0.0493469, 0.0493469, 0.223529 )
+position = Vector2( 13.988, 15 )
+z_index = -1
+texture = ExtResource( 5 )
+
 [node name="sprite" type="AnimatedSprite" parent="body1/body2/body3/body4/body5/body6/body7"]
 position = Vector2( -1.5, 72 )
 scale = Vector2( 2, 2 )
 frames = SubResource( 4 )
 frame = 1
 playing = true
+
+[node name="shadow" type="Sprite" parent="body1/body2/body3/body4/body5/body6/body7/sprite"]
+modulate = Color( 0.0546875, 0.0493469, 0.0493469, 0.223529 )
+position = Vector2( 13.988, 15 )
+z_index = -1
+texture = ExtResource( 5 )
 
 [node name="7-8" type="PinJoint2D" parent="body1/body2/body3/body4/body5/body6/body7"]
 position = Vector2( 0, 152 )
@@ -137,6 +150,12 @@ frames = SubResource( 4 )
 frame = 1
 playing = true
 
+[node name="shadow" type="Sprite" parent="body1/body2/body3/body4/body5/body6/sprite"]
+modulate = Color( 0.0546875, 0.0493469, 0.0493469, 0.223529 )
+position = Vector2( 13.988, 15 )
+z_index = -1
+texture = ExtResource( 5 )
+
 [node name="6-7" type="PinJoint2D" parent="body1/body2/body3/body4/body5/body6"]
 position = Vector2( 0, 160 )
 node_a = NodePath("..")
@@ -148,6 +167,12 @@ position = Vector2( -1.5, 72 )
 scale = Vector2( 2, 2 )
 frames = SubResource( 4 )
 playing = true
+
+[node name="shadow" type="Sprite" parent="body1/body2/body3/body4/body5/sprite"]
+modulate = Color( 0.0546875, 0.0493469, 0.0493469, 0.223529 )
+position = Vector2( 13.988, 15 )
+z_index = -1
+texture = ExtResource( 5 )
 
 [node name="5-6" type="PinJoint2D" parent="body1/body2/body3/body4/body5"]
 position = Vector2( 0, 168 )
@@ -161,6 +186,12 @@ scale = Vector2( 2, 2 )
 frames = SubResource( 4 )
 playing = true
 
+[node name="shadow" type="Sprite" parent="body1/body2/body3/body4/sprite"]
+modulate = Color( 0.0546875, 0.0493469, 0.0493469, 0.223529 )
+position = Vector2( 13.988, 15 )
+z_index = -1
+texture = ExtResource( 5 )
+
 [node name="4-5" type="PinJoint2D" parent="body1/body2/body3/body4"]
 position = Vector2( 0, 168 )
 node_a = NodePath("..")
@@ -171,6 +202,12 @@ position = Vector2( -1.5, 72 )
 scale = Vector2( 2, 2 )
 frames = SubResource( 4 )
 playing = true
+
+[node name="shadow" type="Sprite" parent="body1/body2/body3/sprite"]
+modulate = Color( 0.0546875, 0.0493469, 0.0493469, 0.223529 )
+position = Vector2( 13.988, 15 )
+z_index = -1
+texture = ExtResource( 5 )
 
 [node name="3-4" type="PinJoint2D" parent="body1/body2/body3"]
 position = Vector2( 0, 168 )
@@ -183,6 +220,12 @@ position = Vector2( -1.5, 72 )
 scale = Vector2( 2, 2 )
 frames = SubResource( 4 )
 playing = true
+
+[node name="shadow" type="Sprite" parent="body1/body2/sprite"]
+modulate = Color( 0.0546875, 0.0493469, 0.0493469, 0.223529 )
+position = Vector2( 13.988, 15 )
+z_index = -1
+texture = ExtResource( 5 )
 
 [node name="2-3" type="PinJoint2D" parent="body1/body2"]
 position = Vector2( 0, 168 )
@@ -197,6 +240,12 @@ frames = SubResource( 4 )
 frame = 2
 playing = true
 
+[node name="shadow" type="Sprite" parent="body1/sprite"]
+modulate = Color( 0, 0, 0, 0.223529 )
+position = Vector2( 16.25, 20 )
+z_index = -1
+texture = ExtResource( 5 )
+
 [node name="1-2" type="PinJoint2D" parent="body1"]
 position = Vector2( 0, 168 )
 node_a = NodePath("..")
@@ -207,6 +256,12 @@ softness = 2.0
 scale = Vector2( 2, 2 )
 frames = SubResource( 2 )
 playing = true
+
+[node name="shadow" type="Sprite" parent="sprite"]
+modulate = Color( 0.03125, 0.03125, 0.03125, 0.223529 )
+position = Vector2( 16.5, 9 )
+z_index = -1
+texture = ExtResource( 3 )
 
 [node name="0-1" type="PinJoint2D" parent="."]
 position = Vector2( 0, 64 )

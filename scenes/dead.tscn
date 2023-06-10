@@ -1,0 +1,103 @@
+[gd_scene load_steps=8 format=2]
+
+[ext_resource path="res://assets/sprites/sinematic/dead.png" type="Texture" id=1]
+[ext_resource path="res://assets/sprites/black_box.png" type="Texture" id=2]
+[ext_resource path="res://assets/font/digital.tres" type="DynamicFont" id=3]
+[ext_resource path="res://assets/audio/Faster_Version-2021-05-25_-_Mighty_Russia_-_www.FesliyanStudios.com.mp3" type="AudioStream" id=4]
+[ext_resource path="res://scripts/dead.gd" type="Script" id=5]
+
+[sub_resource type="Shader" id=6]
+code = "//https://godotshaders.com/shader/old-movie-shader/
+shader_type canvas_item;
+
+uniform float projector_power : hint_range(0,1) = 0.5;
+uniform sampler2D distortionTexture;
+uniform float vignette_param: hint_range(1,10)=20.0;
+
+//vars related to the passing lines
+
+
+//noise for the projector flickering
+float noise(vec2 input){
+	return fract(sin(dot(input,vec2(3.1415,8952.37)*12.29))*93.116);
+}
+
+void fragment() {
+	//vignette-related:
+	float vignette_param2 =vignette_param+0.5*(noise(vec2(TIME/60.0,TIME/59.0)));
+	float vig=-vignette_param2*((UV.x-0.5)*(UV.x-0.5)+(UV.y-0.5)*(UV.y-0.5));
+	vec4 vignette=vec4(vig,vig,vig,1.0);
+
+	//grayscale-related:
+	vec4 pixelcolor = texture(SCREEN_TEXTURE, SCREEN_UV);
+	float brightness = (.299*pixelcolor.r + 0.487*pixelcolor.g + 0.114*pixelcolor.b);
+	vec4 grayscale= vec4(brightness,brightness,brightness,pixelcolor.a);
+	
+	//random-fluctuation:
+	vec4 random=texture(distortionTexture,UV);
+	
+	//Small speckles:
+	float RTIME1=round(TIME*20.0);
+	vec2 position1=vec2(noise(vec2(RTIME1,RTIME1)),noise(vec2(RTIME1/2.0,RTIME1/2.0)));
+	float energy= 1000000.0*(1.0+0.5*noise(vec2(RTIME1,RTIME1)));
+	float xdev1=(UV.x-position1.x);
+	float ydev1=(UV.y-position1.y);
+	float spec=energy*(xdev1*xdev1+0.5*ydev1*ydev1)+.1*noise(vec2(UV.x,UV.y));
+	vec4 speckle=vec4(max(0.0,20.0-spec),max(0.0,20.0-spec),max(0.0,20.0-spec),1.0);
+	
+	//lines:
+	float RTIME2=round(TIME*5.0);
+	vec2 positionline=vec2(noise(vec2(RTIME2,RTIME2))/4.0,noise(vec2(RTIME2/3.0,RTIME2/3.0)));
+	float xline=(UV.x-positionline.x);
+	float yline=(UV.y-positionline.y);
+	float lin=energy*(xline*xline+0.00001*yline*yline)+.1*noise(vec2(UV.x,UV.y));
+	vec4 line=vec4(max(0.0,8.0-lin),max(0.0,8.0-lin),max(0.0,8.0-lin),1.0);
+	
+	//combining-the parts:
+	vec4 dirt=mix(speckle,line,0.5);
+	vec4 grayscale2=mix(random,vignette,0.7);
+	vec4 grayscale3=mix(dirt,grayscale2,0.7);
+	COLOR = mix(grayscale, grayscale3, projector_power);
+}"
+
+[sub_resource type="ShaderMaterial" id=5]
+shader = SubResource( 6 )
+shader_param/projector_power = 0.5
+shader_param/vignette_param = 20.0
+
+[node name="main" type="CanvasLayer"]
+script = ExtResource( 5 )
+
+[node name="Camera2D" type="Camera2D" parent="."]
+anchor_mode = 0
+current = true
+
+[node name="Sprite" type="Sprite" parent="Camera2D"]
+position = Vector2( 640, 362 )
+texture = ExtResource( 1 )
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Camera2D/Sprite"]
+
+[node name="music" type="AudioStreamPlayer" parent="Camera2D"]
+stream = ExtResource( 4 )
+autoplay = true
+
+[node name="text" type="Label" parent="Camera2D"]
+margin_left = 225.0
+margin_top = 520.0
+margin_right = 3748.0
+margin_bottom = 925.0
+rect_scale = Vector2( 0.25, 0.25 )
+custom_colors/font_color = Color( 1, 0.866667, 0, 1 )
+custom_colors/font_outline_modulate = Color( 1, 0.960784, 0, 1 )
+custom_colors/font_color_shadow = Color( 1, 1, 1, 1 )
+custom_fonts/font = ExtResource( 3 )
+text = "press right Mouse click for the main menu
+"
+
+[node name="viniet" type="Sprite" parent="Camera2D/text"]
+modulate = Color( 1, 1, 1, 0.278431 )
+material = SubResource( 5 )
+position = Vector2( 1600, -1020 )
+scale = Vector2( 2.32187, 2.26111 )
+texture = ExtResource( 2 )

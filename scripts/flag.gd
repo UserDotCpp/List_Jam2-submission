@@ -3,6 +3,7 @@ var next_scene#export(String) var next_scene# = "res://scenes/maps/map1.tscn"
 var kill_scene #export(String) var kill_scene
 export(int) var blocage_x = 10
 export(int) var blocage_y = 10
+export(bool) var spawn_worm = true
 onready var blocage_position = $blocage_position
 onready var next_scene_pos = $next_scene_position
 var up 
@@ -16,17 +17,20 @@ var worm3 = preload("res://scenes/entities/worm3.tscn")
 #onready var block_last_level = get_parent().get_node("entities")
 #var blocage = preload("res://scenes/entities/blocage.tscn")
 
+export(int) var toal_number_of_maps = 11
+
 func _ready():
 # warning-ignore:return_value_discarded
-	Global.connect("spawn_worm",self,"spawn_the_worm")
+	if spawn_worm:
+		Global.connect("spawn_worm",self,"spawn_the_worm")
 	up = Vector3($up.get_point_position(0).x,$up.get_point_position(1).x,$up.get_point_position(1).y)
 	down = Vector3($down.get_point_position(0).x,$down.get_point_position(1).x,$down.get_point_position(1).y)
 	rng.randomize()
-	var current_map_number = rng.randi_range(1,4)
+	var current_map_number = rng.randi_range(1,toal_number_of_maps)
 	if current_map_number == Global.last_map_number_id:
 		current_map_number += 1
-		if current_map_number == (4 + 1):
-			current_map_number = rng.randi_range(1,3)#current_map_number = 1
+		if current_map_number == (toal_number_of_maps + 1):
+			current_map_number = rng.randi_range(1,(toal_number_of_maps - 1))#current_map_number = 1
 	next_scene = str("res://scenes/maps/map",current_map_number,".tscn")#next_scene = str("res://scenes/maps/map",(randi() % 3 + 1),".tscn")#var n = randi() % (MAX - MIN) + MIN
 	Global.last_map_number_id = current_map_number
 	scene = load(next_scene).instance()
@@ -88,6 +92,8 @@ func spawn_the_worm():
 
 func _on_activation_area_body_entered(body):
 	if body.to_string().begins_with ("tako:"):
+		get_parent().get_node("door/door/ap").play("die")
+		Global.emit_signal("screen_shake",22)
 		if kill_scene != "" and Global.flag_passed:
 			delete_old_scene()
 		if next_scene != "":
@@ -127,3 +133,7 @@ func die():
 func on_die():
 	get_parent().get_parent().get_parent().get_node(Global.last_map_name).call_deferred("queue_free")
 	Global.flag_passed = false
+
+func _on_out_of_bounds_area_body_entered(body):
+	if body.to_string().begins_with ("tako:"):
+		Global.switch_map("//scenes/dead.tscn")

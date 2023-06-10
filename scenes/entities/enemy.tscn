@@ -5,8 +5,8 @@
 [ext_resource path="res://assets/sprites/enemy/2.png" type="Texture" id=4]
 [ext_resource path="res://assets/sprites/enemy/3.png" type="Texture" id=5]
 
-[sub_resource type="RectangleShape2D" id=1]
-extents = Vector2( 52, 28 )
+[sub_resource type="RectangleShape2D" id=4]
+extents = Vector2( 35, 25 )
 
 [sub_resource type="SpriteFrames" id=3]
 animations = [ {
@@ -27,10 +27,11 @@ contact_monitor = true
 script = ExtResource( 2 )
 
 [node name="hitbox" type="CollisionShape2D" parent="."]
-position = Vector2( 4, 20 )
-shape = SubResource( 1 )
+position = Vector2( -1, 17 )
+shape = SubResource( 4 )
 
 [node name="AnimatedSprite" type="AnimatedSprite" parent="."]
+modulate = Color( 0.678431, 0.678431, 0.678431, 1 )
 position = Vector2( 8, -72 )
 scale = Vector2( 0.622584, 0.642371 )
 frames = SubResource( 3 )

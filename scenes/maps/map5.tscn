@@ -1,17 +1,113 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=8 format=2]
 
-[ext_resource path="res://scenes/flag.tscn" type="PackedScene" id=1]
-[ext_resource path="res://assets/audio/close_door.mp3" type="AudioStream" id=2]
+[ext_resource path="res://assets/map_assets/map3/back.png" type="Texture" id=1]
+[ext_resource path="res://scenes/flag.tscn" type="PackedScene" id=2]
+[ext_resource path="res://scenes/entities/bubble.tscn" type="PackedScene" id=3]
+[ext_resource path="res://scenes/entities/enemy.tscn" type="PackedScene" id=4]
+[ext_resource path="res://assets/audio/close_door.mp3" type="AudioStream" id=5]
+[ext_resource path="res://assets/map_assets/map5/front.png" type="Texture" id=6]
+[ext_resource path="res://scenes/entities/door.tscn" type="PackedScene" id=7]
 
 [node name="map" type="Node2D"]
+position = Vector2( 640, -312 )
 
 [node name="stage" type="StaticBody2D" parent="."]
+position = Vector2( -10, 261 )
 
-[node name="Sprite" type="Sprite" parent="stage"]
+[node name="front" type="Sprite" parent="stage"]
+position = Vector2( 2, 4 )
+z_index = 3
+texture = ExtResource( 6 )
+
+[node name="back" type="Sprite" parent="stage"]
+position = Vector2( 0.500006, 2.00002 )
+scale = Vector2( 0.983594, 0.958333 )
+z_index = -2
+texture = ExtResource( 1 )
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="stage"]
+polygon = PoolVector2Array( -631, 56, -560, 32, -477, 247, -450, 326, 363, 336, 639, 342, 642, 428, -628, 415 )
+
+[node name="CollisionPolygon2D2" type="CollisionPolygon2D" parent="stage"]
+polygon = PoolVector2Array( -633, -105, -610, -113, -604, -336, 588, -326, 588, 214, 639, 222, 637, -366, -636, -364 )
+
+[node name="CollisionPolygon2D3" type="CollisionPolygon2D" parent="stage"]
+polygon = PoolVector2Array( -540, -16, -383, -140, -380, -221, -348, -221, -353, -147, -182, -145, -190, 104, 348, 120, 341, 255, -380, 238 )
+
+[node name="CollisionPolygon2D4" type="CollisionPolygon2D" parent="stage"]
+polygon = PoolVector2Array( -79, -75, -60, -62, 40, -249, 20, -260 )
+
+[node name="CollisionPolygon2D5" type="CollisionPolygon2D" parent="stage"]
+polygon = PoolVector2Array( 279, -88, 501, -83, 490, -56, 361, 7, 281, -1 )
+
+[node name="CollisionPolygon2D6" type="CollisionPolygon2D" parent="stage"]
+polygon = PoolVector2Array( 97, -137, 126, -158, 228, -72, 208, -49 )
 
 [node name="entities" type="Node2D" parent="."]
 
-[node name="flag" parent="entities" instance=ExtResource( 1 )]
+[node name="flag" parent="entities" instance=ExtResource( 2 )]
+position = Vector2( -72, 24 )
+blocage_y = 20
+
+[node name="collision_shape" parent="entities/flag/activation_area" index="0"]
+position = Vector2( 718, 528 )
+scale = Vector2( 5, 10 )
+
+[node name="blocage_position" parent="entities/flag" index="1"]
+position = Vector2( -583, 226 )
+
+[node name="next_scene_position" parent="entities/flag" index="2"]
+position = Vector2( 743, 580 )
+
+[node name="up2" parent="entities/flag" index="3"]
+position = Vector2( 23, -539 )
+scale = Vector2( 1.03371, 0.728347 )
+
+[node name="up" parent="entities/flag" index="4"]
+position = Vector2( -19, -4 )
+points = PoolVector2Array( -560, -368, 704, -376 )
+
+[node name="down" parent="entities/flag" index="5"]
+position = Vector2( -8, 427 )
+points = PoolVector2Array( -560, 328, 696, 328 )
+
+[node name="down2" parent="entities/flag" index="6"]
+position = Vector2( 53, 839 )
+scale = Vector2( 1.03441, 0.667361 )
+
+[node name="up" parent="entities/flag/out_of_bounds/out_of_bounds_area" index="0"]
+position = Vector2( 219, -321 )
+scale = Vector2( 30, 6 )
+
+[node name="down" parent="entities/flag/out_of_bounds/out_of_bounds_area" index="1"]
+position = Vector2( 226, 1088 )
+scale = Vector2( 30, 6 )
+
+[node name="right" parent="entities/flag/out_of_bounds/out_of_bounds_area" index="2"]
+position = Vector2( 976, 205 )
+scale = Vector2( 6, 30 )
+
+[node name="bubble" parent="entities" instance=ExtResource( 3 )]
+position = Vector2( 509, -3 )
+
+[node name="bubble2" parent="entities" instance=ExtResource( 3 )]
+position = Vector2( 24, 294 )
+
+[node name="enemy" parent="entities" instance=ExtResource( 4 )]
+position = Vector2( -203, -75 )
+rotation = 3.26618
+
+[node name="enemy2" parent="entities" instance=ExtResource( 4 )]
+position = Vector2( 260, -60 )
+rotation = 3.42003
+
+[node name="door" parent="entities" instance=ExtResource( 7 )]
+position = Vector2( 334, 542 )
+
+[node name="bubble3" parent="entities" instance=ExtResource( 3 )]
+position = Vector2( -413, 541 )
 
 [node name="door_closing_sound" type="AudioStreamPlayer" parent="."]
-stream = ExtResource( 2 )
+stream = ExtResource( 5 )
+
+[editable path="entities/flag"]

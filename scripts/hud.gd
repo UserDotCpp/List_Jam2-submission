@@ -7,6 +7,7 @@ onready var combo_tune = $combo
 export var total_time = 60#30 is good
 var combo
 var combo_text =""
+
 func _ready():
 	combo_tune.pitch_scale = 1
 	combo = 0
@@ -34,9 +35,17 @@ func combo_engine():
 		$combo_text.text = "combo"
 		$combo_notification.text = combo_text
 		combo_number.text = str(combo)
+		if combo <= 20:
+			combo_number.rect_scale = Vector2(0.25 + combo * 0.1,0.25 + combo * 0.1)		
+		#combo_number.size = Vector2(490 +combo*1000,201 + combo*1000)
+		#combo_number.rect_size = Vector2(490 +combo*1000,201 + combo*1000)
 		flag_up()
+		if combo >= Global.points_needed_to_win:
+			if Global.points_needed_to_win <= 1000:
+				Global.switch_map("//scenes/win.tscn")
 	else:
 		combo = 0
+		combo_number.rect_scale = Vector2(1,1)
 		combo_number.text = " "
 		combo_tune.pitch_scale = 1
 		$combo_notification.text = "2 slow"
@@ -68,7 +77,7 @@ func gained_seconds(value):
 	time_changes.text = "+"+ str(value)
 	total_time += value
 	if total_time > 60:
-		$time_leyend.text = str("+",int(total_time / 60),"extra tanks")
+		$time_leyend.text = str("+",int(total_time / 60)," extra tanks")
 
 func _process(delta):
 	fps.text = str(Engine.get_frames_per_second())
@@ -83,8 +92,7 @@ func _process(delta):
 		$worm_attack.start(0.01655)
 		Global.emit_signal("spawn_worm")
 	if total_time <= 0:
-		$me_mori.play()
-		Global.switch_map("//scenes/main.tscn")
+		Global.switch_map("//scenes/dead.tscn")
 
 func _on_fade_out_timeout():
 	combo_text =""

@@ -1,10 +1,13 @@
-[gd_scene load_steps=13 format=2]
+[gd_scene load_steps=17 format=2]
 
 [ext_resource path="res://scripts/tako.gd" type="Script" id=1]
 [ext_resource path="res://assets/sprites/pepki.png" type="Texture" id=2]
-[ext_resource path="res://assets/audio/aura_loop.mp3" type="AudioStream" id=3]
+[ext_resource path="res://assets/audio/shake.mp3" type="AudioStream" id=3]
 [ext_resource path="res://assets/audio/impulse.mp3" type="AudioStream" id=4]
 [ext_resource path="res://assets/sprites/cursor.png" type="Texture" id=5]
+[ext_resource path="res://assets/audio/hit.mp3" type="AudioStream" id=6]
+[ext_resource path="res://assets/audio/out.mp3" type="AudioStream" id=7]
+[ext_resource path="res://assets/sprites/oxygen/1.png" type="Texture" id=8]
 
 [sub_resource type="RectangleShape2D" id=3]
 extents = Vector2( 18.75, 49 )
@@ -173,6 +176,18 @@ tracks/12/keys = {
 "update": 0,
 "values": [ Rect2( 563, 21, 297, 91 ) ]
 }
+tracks/13/type = "value"
+tracks/13/path = NodePath("../back_part:visible")
+tracks/13/interp = 1
+tracks/13/loop_wrap = true
+tracks/13/imported = false
+tracks/13/enabled = true
+tracks/13/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ false ]
+}
 
 [sub_resource type="Animation" id=12]
 resource_name = "charging shot"
@@ -296,6 +311,18 @@ tracks/9/keys = {
 "transitions": PoolRealArray( 1, 1 ),
 "update": 0,
 "values": [ Vector2( 1, 0.8 ), Vector2( 1, 0.8 ) ]
+}
+tracks/10/type = "value"
+tracks/10/path = NodePath("../back_part:visible")
+tracks/10/interp = 1
+tracks/10/loop_wrap = true
+tracks/10/imported = false
+tracks/10/enabled = true
+tracks/10/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ false ]
 }
 
 [sub_resource type="Animation" id=10]
@@ -433,6 +460,18 @@ tracks/10/keys = {
 "transitions": PoolRealArray( 1 ),
 "update": 0,
 "values": [ Vector2( 1, 0.8 ) ]
+}
+tracks/11/type = "value"
+tracks/11/path = NodePath("../back_part:visible")
+tracks/11/interp = 1
+tracks/11/loop_wrap = true
+tracks/11/imported = false
+tracks/11/enabled = true
+tracks/11/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ false ]
 }
 
 [sub_resource type="Animation" id=11]
@@ -583,6 +622,27 @@ tracks/11/keys = {
 "update": 0,
 "values": [ Vector2( 1, 0.8 ) ]
 }
+tracks/12/type = "value"
+tracks/12/path = NodePath("../back_part:visible")
+tracks/12/interp = 1
+tracks/12/loop_wrap = true
+tracks/12/imported = false
+tracks/12/enabled = true
+tracks/12/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ true ]
+}
+
+[sub_resource type="ParticlesMaterial" id=13]
+lifetime_randomness = 0.07
+flag_disable_z = true
+direction = Vector3( 0, 1, 0 )
+spread = 62.96
+gravity = Vector3( -100, 0, 0 )
+orbit_velocity = 0.0
+orbit_velocity_random = 0.0
 
 [node name="tako" type="RigidBody2D"]
 collision_layer = 5
@@ -595,16 +655,27 @@ wait_time = 0.5
 one_shot = true
 
 [node name="Sprite" type="Sprite" parent="."]
+modulate = Color( 0.505882, 0.505882, 0.505882, 1 )
 position = Vector2( 0, 1 )
 rotation = 1.5708
 scale = Vector2( 1, 0.8 )
 texture = ExtResource( 2 )
-offset = Vector2( -0.5, 0 )
+offset = Vector2( -4.5, 0 )
 hframes = 7
+frame = 2
 region_enabled = true
 region_rect = Rect2( 10, 12, 326, 100 )
 
+[node name="shadow" type="Sprite" parent="Sprite"]
+modulate = Color( 0, 0, 0, 0.2 )
+position = Vector2( 2.00006, 20 )
+z_index = -1
+texture = ExtResource( 2 )
+region_enabled = true
+region_rect = Rect2( 644, 38, 45, 73 )
+
 [node name="hitbox" type="CollisionShape2D" parent="."]
+visible = false
 position = Vector2( 0, -4 )
 rotation = 1.5708
 scale = Vector2( 1, 0.8 )
@@ -637,14 +708,35 @@ anims/RESET = SubResource( 9 )
 anims/idle = SubResource( 10 )
 anims/shot = SubResource( 11 )
 
+[node name="hit" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 6 )
+volume_db = -10.331
+pitch_scale = 1.18
+
 [node name="impulse" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource( 4 )
-volume_db = -7.429
+volume_db = -1.914
+
+[node name="release_gas" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 7 )
+volume_db = -8.265
 
 [node name="charge" type="AudioStreamPlayer" parent="."]
 stream = ExtResource( 3 )
+volume_db = -17.219
 autoplay = true
 stream_paused = true
+
+[node name="back_part" type="Particles2D" parent="."]
+visible = false
+position = Vector2( -40, -2 )
+scale = Vector2( 0.15, 0.15 )
+amount = 7
+lifetime = 5.0
+speed_scale = 4.0
+randomness = 0.02
+process_material = SubResource( 13 )
+texture = ExtResource( 8 )
 
 [node name="ui" type="Node2D" parent="."]
 visible = false

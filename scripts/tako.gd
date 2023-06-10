@@ -14,12 +14,20 @@ onready var fade_of_timer = $fade_of
 onready var the_progress_bar = $ui/ProgressBar
 onready var ui = $ui
 
+func _ready():
+	cursor.visible = false
+	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+	mode = RigidBody2D.MODE_RIGID
+
 func _physics_process(_delta):
 	set_rotation(direc)
 	ui.set_rotation(-direc)
 #https://www.youtube.com/watch?v=vVDVJMomxBU
 #https://godotengine.org/qa/28543/godot-3-0-2-get-global-position-from-touchscreen
 func _input(event):
+	if Input.is_action_pressed("r"):
+		Global.current_main = "//scenes/dead.tscn"
+		Global.switch_map("//scenes/menu.tscn")
 	if !can_shoot:
 		return
 	if Input.is_action_pressed("leftMouse"):
@@ -39,13 +47,15 @@ func _input(event):
 		if power >= 100:
 			return
 		if shoot_pos.angle() >= last+0.01 or shoot_pos.angle() <= last-0.01:
-			power = power + power*0.25
+			power = power + 2.5#power*0.25
 			#power += 1#0.05
 		last = shoot_pos.angle()
 		the_progress_bar.value = power
 		#linear_velocity = Vector2(0,0)
 		#the_progress_bar.value = power
 	elif Input.is_action_just_released("leftMouse"):
+		$release_gas.pitch_scale = 1 + power * 0.01#(randi() % 10 + 1)*0.1
+		$release_gas.play()
 	#elif Input.is_action_just_pressed("rightMouse"):
 		#Global.emit_signal("get_touch_real_global_position")
 		shot = true
@@ -58,13 +68,17 @@ func _input(event):
 		mode = RigidBody2D.MODE_RIGID
 		var speed = -shoot_pos
 		apply_central_impulse((speed* 0.01) * (power *5))#apply_central_impulse((speed* 0.05) * (1 + power)) # 8 = speed modifier
-		Global.emit_signal("oxygen_spend",(1+power*0.025))#Global.emit_signal("oxygen_spend",(power + 1))
+		Global.emit_signal("oxygen_spend",(1+power*0.03))#Global.emit_signal("oxygen_spend",(power + 1))
 		power = 1
 		ui.hide()
 	if Input.is_action_just_pressed("rightMouse"):
+		#Global.switch_map("//scenes/dead.tscn")
+		$release_gas.pitch_scale = 1 +(randi() % 10 + 1)*0.1
+		$release_gas.play()
 		linear_velocity = linear_velocity* 0.05
 		animation_state("shot")
 		fade_of_timer.start()#power*0.01)
+		
 	#	cursor.visible = false
 	#	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 
@@ -73,6 +87,9 @@ func _on_monitor_input_event(_viewport, _event, _shape_idx):
 
 func _on_Area2D_body_entered(body):
 	if body is StaticBody2D:
+		# warning-ignore:integer_division
+		$hit.pitch_scale = 1 + (randi() % 20 + 1)/10
+		$hit.play()
 		Global.touched_the_wall = true
 		linear_velocity = linear_velocity* 0.5#Vector2(0,0)
 		if shot and !first_time_chargin:
@@ -86,4 +103,3 @@ func animation_state(name):
 func _on_fade_of_timeout():
 	if shot:
 		animation_state("idle")
-

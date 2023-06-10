@@ -17,6 +17,7 @@ script = ExtResource( 1 )
 player_path = NodePath("../tako")
 
 [node name="Sprite" type="Sprite" parent="camera"]
+visible = false
 position = Vector2( 709, 248 )
 scale = Vector2( 2.40781, 2.4 )
 z_index = -5
@@ -28,6 +29,6 @@ texture = ExtResource( 4 )
 position = Vector2( -592, -376 )
 
 [node name="tako" parent="." instance=ExtResource( 5 )]
-position = Vector2( -336, -8 )
+position = Vector2( -375, 107 )
 
 [node name="hud" parent="." instance=ExtResource( 3 )]
